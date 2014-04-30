@@ -1,0 +1,7 @@
+SCPnoLinkerBonds 1
+SCPdelta 0
+SCPabsDelta 1
+SCPnoAroRings 0 
+SCPnoHetAt 1 
+SCPnoNAt 0
+SCPnoOAt 1
