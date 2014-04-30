@@ -1,0 +1,16 @@
+@echo off
+
+REM The memory that can be used by the program
+set memory=1024m
+
+REM change to the directory in which the jar file is located
+cd /d %0\.. 
+
+if exist %@SH_JAR_FILE@ goto run
+echo File "@SH_JAR_FILE@" not found! 
+goto end
+
+:run
+java -Xmx%memory% -jar @SH_JAR_FILE@
+
+:end
