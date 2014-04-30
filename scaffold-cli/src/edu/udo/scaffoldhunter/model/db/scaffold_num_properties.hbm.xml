@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="edu.udo.scaffoldhunter.model.db">
+
+	<class name="ScaffoldNumProperty" table="scaffold_num_properties">
+		<id name="id" column="scaffold_num_property_id" access="field">
+			<generator class="native"/>
+		</id>
+		<many-to-one name="scaffold" class="Scaffold" column="structure_id" not-null="true" lazy="no-proxy"/>
+		<many-to-one name="type" class="PropertyDefinition" column="property_id" not-null="true" lazy="no-proxy"/>
+		<property name="value" type="double" not-null="true"/>
+	</class>
+
+</hibernate-mapping>

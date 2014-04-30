@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="edu.udo.scaffoldhunter.model.db">
+
+	<class name="Structure" table="structure_data">
+		<id name="id" column="structure_id" access="field">
+			<generator class="native" />
+		</id>
+		<property name="title" type="text" />
+		<property name="smiles" type="text" not-null="true" />
+		<!-- This is a one-to-one -->
+		<many-to-one name="svg" class="Svg" column="svg_id"
+			cascade="all" unique="true" lazy="no-proxy" not-null="true" access="field" />
+		<!-- This is a one-to-one -->
+		<many-to-one name="mol" class="Mol" column="mol_id"
+			cascade="all" unique="true" lazy="no-proxy" not-null="true" access="field" />
+		<property name="svgHeight" type="integer" />
+		<property name="svgWidth" type="integer" />
+		<!--   this is for deleting all banners referencing the Structure if the Structure gets deleted    -->
+		<set name="banners" access="noop" inverse="true" cascade="delete">
+			<key column="structure_id" not-null="true" on-delete="cascade"/>
+			<one-to-many class="Banner"/>
+        </set>
+	</class>
+	
+	<database-object>
+		<create>create index smiles_index on structure_data (smiles(255))</create>
+		<drop>drop index smiles_index on structure_data</drop>
+		<dialect-scope name="org.hibernate.dialect.MySQL5InnoDBDialect" />
+	</database-object>
+	<database-object>
+		<create>create index smiles_index on structure_data (smiles)</create>
+		<drop>drop index smiles_index on structure_data</drop>
+		<dialect-scope name="org.hibernate.dialect.HSQLDialect" />
+		<dialect-scope name="edu.udo.scaffoldhunter.model.db.HSQLDialectValid" />
+	</database-object>
+</hibernate-mapping>

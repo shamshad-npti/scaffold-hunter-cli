@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="edu.udo.scaffoldhunter.model.db">
+
+	<class name="PropertyDefinition" table="property_definition">
+		<id name="id" column="property_id" access="field">
+			<generator class="native"/>
+		</id>
+		<property name="title" type="text" not-null="true"/>
+		<property name="description" type="text"/>
+		<property name="propertyType" not-null="true">
+			<type name="org.hibernate.type.EnumType">
+				<param name="enumClass">edu.udo.scaffoldhunter.model.PropertyType</param>
+				<!-- java.sql.Types.VARCHAR -->
+				<param name="type">12</param>
+			</type>
+		</property>
+		<property name="key" type="string" not-null="true" column="key_name" unique-key="key_dataset_unique_constraint"/>
+		<property name="mappable" type="boolean" not-null="true"/>
+		<property name="scaffoldProperty" type="boolean" not-null="true"/>
+		<many-to-one name="dataset" class="Dataset" column="dataset_id" not-null="true" lazy="false" unique-key="key_dataset_unique_constraint"/>
+		<!--   this is for deleting all molecule_num_properties referencing the propertyDefinition if the propertyDefinition gets deleted    -->
+		<set name="moleculeNumProperties" access="noop" inverse="true" cascade="delete">
+			<key column="property_id" not-null="true" on-delete="cascade"/>
+			<one-to-many class="MoleculeNumProperty"/>
+        </set>
+		<!--   this is for deleting all molecule_string_properties referencing the propertyDefinition if the propertyDefinition gets deleted    -->
+		<set name="moleculeStringProperties" access="noop" inverse="true" cascade="delete">
+			<key column="property_id" not-null="true" on-delete="cascade"/>
+			<one-to-many class="MoleculeStringProperty"/>
+        </set>
+		<!--   this is for deleting all scaffold_num_properties referencing the propertyDefinition if the propertyDefinition gets deleted    -->
+		<set name="scaffoldNumProperties" access="noop" inverse="true" cascade="delete">
+			<key column="property_id" not-null="true" on-delete="cascade"/>
+			<one-to-many class="ScaffoldNumProperty"/>
+        </set>
+		<!--   this is for deleting all scaffold_string_properties referencing the propertyDefinition if the propertyDefinition gets deleted    -->
+		<set name="scaffoldStringProperties" access="noop" inverse="true" cascade="delete">
+			<key column="property_id" not-null="true" on-delete="cascade"/>
+			<one-to-many class="ScaffoldStringProperty"/>
+        </set>
+	</class>
+
+</hibernate-mapping>

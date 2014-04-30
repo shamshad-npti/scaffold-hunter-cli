@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="edu.udo.scaffoldhunter.model.db">
+
+	<class name="BookmarkFolder" table="bookmarkfolders">
+		<id name="id" column="bookmarkfolder_id" access="field">
+			<generator class="native"/>
+		</id>
+		<many-to-one name="parent" class="BookmarkFolder" column="parent_id" lazy="false"/>
+		<many-to-one name="profile" class="Profile" column="profile_id" lazy="false"/>
+		<property name="name" type="text" not-null="true"/>
+		<set name="bookmarks" inverse="true" lazy="false" cascade="all">
+         	<key column="bookmarkfolder_id" on-delete="cascade"/>
+         	<one-to-many class="Bookmark"/>
+        </set>
+        <!--   this is for deleting all bookmarkfolders referencing the bookmarkfolder if the bookmarkfolder gets deleted    -->
+		<set name="childrenFolders" access="noop" inverse="true" cascade="delete">
+			<key column="parent_id" not-null="true" on-delete="cascade"/>
+			<one-to-many class="BookmarkFolder"/>
+        </set>
+	</class>
+
+</hibernate-mapping>
+

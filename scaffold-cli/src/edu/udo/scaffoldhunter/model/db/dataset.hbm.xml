@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="edu.udo.scaffoldhunter.model.db">
+
+	<class name="Dataset" table="dataset">
+		<id name="id" column="dataset_id" access="field">
+			<generator class="native"/>
+		</id>		
+		<property name="title" type="string" not-null="true" unique="true"/>
+		<property name="comment" type="text" not-null="true"/>
+		<many-to-one name="filterset" class="Filterset" column="filterset_id" lazy="false"/>
+		<property name="databaseIdentifiers" type="text" not-null="true"/>
+		<many-to-one name="createdBy" class="Profile" column="profile_id" lazy="no-proxy" not-null="true"/>
+		<property name="creationDate" type="timestamp"/>
+		<set name="trees" inverse="true" lazy="false" cascade="delete">
+			<key column="dataset_id" not-null="true" on-delete="cascade"/>
+			<one-to-many class="Tree"/>
+        </set>
+        <map name="propertyDefinitions" inverse="true" lazy="false" cascade="delete">
+			<key column="dataset_id" not-null="true" on-delete="cascade"/>
+			<map-key column="key_name" type="string"/>
+			<one-to-many class="PropertyDefinition"/>
+        </map>
+        <!--   this is for deleting all comments referencing the dataset if the dataset gets deleted    -->
+		<set name="comments" access="noop" inverse="true" cascade="delete">
+			<key column="dataset_id" not-null="true" on-delete="cascade"/>
+			<one-to-many class="Comment"/>
+        </set>
+        <!--   this is for deleting all molecules referencing the dataset if the dataset gets deleted    -->
+		<set name="molecules" access="noop" inverse="true" cascade="delete">
+			<key column="dataset_id" not-null="true" on-delete="cascade"/>
+			<one-to-many class="Molecule"/>
+        </set>
+	</class>
+
+</hibernate-mapping>

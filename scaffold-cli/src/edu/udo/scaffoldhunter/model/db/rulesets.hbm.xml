@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="edu.udo.scaffoldhunter.model.db">
+
+	<class name="Ruleset" table="rulesets">
+		<id name="id" column="ruleset_id" access="field">
+			<generator class="native"/>
+		</id>
+		<property name="title" type="string" not-null="true" unique="true"/>
+		<list name="orderedRules" inverse="true" lazy="false" cascade="all">
+			<key column="ruleset_id" on-delete="cascade"/>
+			<index column="order_nr"/>
+			<one-to-many class="Rule"/>
+        </list>
+	</class>
+
+</hibernate-mapping>

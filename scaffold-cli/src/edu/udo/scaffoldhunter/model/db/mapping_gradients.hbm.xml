@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+                                   "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+                                   
+<hibernate-mapping package="edu.udo.scaffoldhunter.model.db">
+
+	<class name="MappingGradient" table="mapping_gradients">
+		 <id access="field" column="mapping_gradients_id" name="id">
+		  	<generator class="native"/>
+		 </id>
+		 
+		 <property name="ascending" not-null="true" type="boolean"/>
+		 <property name="color1" type="java.awt.Color"/>
+		 <property name="color2" type="java.awt.Color"/>
+	</class>
+
+</hibernate-mapping>

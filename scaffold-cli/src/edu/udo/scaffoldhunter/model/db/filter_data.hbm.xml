@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="edu.udo.scaffoldhunter.model.db">
+
+	<class name="Filter" table="filter_data">
+		<id name="id" column="filter_id" access="field">
+			<generator class="native" />
+		</id>
+		<many-to-one name="filterset" class="Filterset" column="filterset_id" lazy="false" />
+		<property name="propDefKey" type="string" not-null="true" access="field" />
+		<property name="accumulationFunction">
+			<type name="org.hibernate.type.EnumType">
+				<param name="enumClass">edu.udo.scaffoldhunter.model.AccumulationFunction</param>
+				<!-- java.sql.Types.VARCHAR -->
+				<param name="type">12</param>
+			</type>
+		</property>
+	</class>
+
+</hibernate-mapping>

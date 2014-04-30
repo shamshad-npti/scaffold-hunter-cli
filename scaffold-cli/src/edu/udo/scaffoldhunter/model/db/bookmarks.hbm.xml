@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="edu.udo.scaffoldhunter.model.db">
+
+	<class name="Bookmark" table="bookmarks">
+		<id name="id" column="bookmark_id" access="field">
+			<generator class="native"/>
+		</id>
+		<many-to-one name="folder" class="BookmarkFolder" column="bookmarkfolder_id" lazy="false"/>
+		<property name="title" type="text" not-null="true"/>
+		<property name="smiles" type="text" not-null="true"/>
+		<property name="molecule" type="boolean" not-null="true"/>
+	</class>
+
+</hibernate-mapping>
+

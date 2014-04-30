@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="edu.udo.scaffoldhunter.model.db">
+
+	<class name="Subset" table="subset_data">
+		<id name="id" column="subset_id" access="field">
+			<generator class="native"/>
+		</id>
+		<many-to-one name="parent" class="Subset" column="parent_id" lazy="false"/>
+		<many-to-one name="session" class="Session" column="session_id" lazy="false"/>
+		<property name="title" type="text" not-null="true"/>
+		<property name="comment" type="text"/>
+		<set name="molecules" lazy="false" table="subset_molecule_relationship">
+	        <key column="subset_id" foreign-key="none"/>
+	        <many-to-many column="molecule_id" class="Molecule" foreign-key="none"/>
+        </set>
+        <set name="children" lazy="false" inverse="true" cascade="delete">
+         	<key column="parent_id" on-delete="cascade"/>
+         	<one-to-many class="Subset"/>
+        </set>
+        <property name="creationDate" type="timestamp" not-null="true"/>
+	</class>
+	<database-object>
+		<create>ALTER TABLE `subset_molecule_relationship`  
+			ADD CONSTRAINT `fk_subset_for_smr` 
+			FOREIGN KEY (`subset_id` ) 
+			REFERENCES `subset_data` (`subset_id` ) 
+			ON DELETE CASCADE 
+			ON UPDATE NO ACTION, 
+			ADD CONSTRAINT `fk_molecule_for_smr` 
+			FOREIGN KEY (`molecule_id` ) 
+			REFERENCES `molecule_data` (`structure_id`) 
+			ON DELETE CASCADE 
+			ON UPDATE NO ACTION, 
+			ADD INDEX `fk_subset_for_smr` (`subset_id` ASC), 
+			ADD INDEX `fk_molecule_for_smr` (`molecule_id` ASC);
+		</create>
+		<drop>ALTER TABLE `subset_molecule_relationship`  
+			DROP FOREIGN KEY `fk_subset_for_smr` 
+			DROP FOREIGN KEY `fk_molecule_for_smr`;
+		</drop>
+		<dialect-scope name="org.hibernate.dialect.MySQL5InnoDBDialect" />
+	</database-object>
+	<database-object>
+		<create>ALTER TABLE subset_molecule_relationship  
+			ADD CONSTRAINT fk_subset_for_smr 
+			FOREIGN KEY (subset_id ) 
+			REFERENCES subset_data (subset_id ) 
+			ON DELETE CASCADE 
+			ON UPDATE NO ACTION; 
+			ALTER TABLE subset_molecule_relationship
+			ADD CONSTRAINT fk_molecule_for_smr 
+			FOREIGN KEY (molecule_id ) 
+			REFERENCES molecule_data (structure_id) 
+			ON DELETE CASCADE 
+			ON UPDATE NO ACTION;
+		</create>
+		<drop>ALTER TABLE subset_molecule_relationship  
+			DROP FOREIGN KEY fk_subset_for_smr;
+			ALTER TABLE subset_molecule_relationship
+			DROP FOREIGN KEY `fk_molecule_for_smr;
+		</drop>
+		<dialect-scope name="org.hibernate.dialect.HSQLDialect" />
+		<dialect-scope name="edu.udo.scaffoldhunter.model.db.HSQLDialectValid" />
+	</database-object>
+	
+</hibernate-mapping>
+

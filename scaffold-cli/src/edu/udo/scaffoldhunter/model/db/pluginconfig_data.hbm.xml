@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="edu.udo.scaffoldhunter.model.db">
+
+	<class name="PluginConfig" table="pluginconfig_data">
+		<id name="id" column="pluginconfig_id" access="field">
+			<generator class="native" />
+		</id>
+		<many-to-one name="profile" class="Profile" column="profile_id"
+			lazy="no-proxy" unique-key="profile_pluginId_unique_constraint" />
+		<property name="pluginId" type="string" not-null="true"
+			unique-key="profile_pluginId_unique_constraint" />
+		<property name="config" type="java.io.Serializable" not-null="false"/>
+	</class>
+
+</hibernate-mapping>
+

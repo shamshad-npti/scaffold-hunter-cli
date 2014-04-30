@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+    <session-factory>
+        <!-- Database connection settings -->
+        <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="connection.url">jdbc:mysql://localhost/hibernate_test</property>
+        <property name="connection.username">hibernate</property>
+        <property name="connection.password">temp</property>
+
+
+        <!-- JDBC connection pool (use the built-in) -->
+        <property name="connection.pool_size">1</property>
+
+        <!-- SQL dialect -->
+		<!-- Should not be specified because of autodetection  -->
+		<!--        <property name="dialect">org.hibernate.dialect.HSQLDialect</property>-->
+		<!--		<property name="connection.driver_class">com.mysql.jdbc.Driver</property>-->
+		<!--		<property name="dialect">org.hibernate.dialect.MySQLInnoDBDialect</property> -->
+
+        <!-- Enable Hibernate's automatic session context management -->
+        <property name="current_session_context_class">thread</property>
+
+        <!-- Disable the second-level cache  -->
+        <property name="cache.provider_class">org.hibernate.cache.NoCacheProvider</property>
+
+        <!-- Do not echo all executed SQL to stdout -->
+		<!-- This is handled by slf4j -->
+        <property name="show_sql">false</property>
+
+        <!-- Strategy for updating database schema -->
+        <property name="hbm2ddl.auto">create</property>
+        
+        <property name="hibernate.connection.CharSet">utf8</property>
+        <property name="hibernate.connection.characterEncoding">utf8</property>
+        <property name="hibernate.connection.useUnicode">true</property>
+
+		<!-- The mapping files -->
+        <mapping resource="edu/udo/scaffoldhunter/model/db/profiles.hbm.xml"/>
+        <mapping resource="edu/udo/scaffoldhunter/model/db/links.hbm.xml"/>
+        <mapping resource="edu/udo/scaffoldhunter/model/db/presets.hbm.xml"/>
+        <mapping resource="edu/udo/scaffoldhunter/model/db/mappings.hbm.xml"/>
+     	<mapping resource="edu/udo/scaffoldhunter/model/db/filtersets.hbm.xml"/>
+     	<mapping resource="edu/udo/scaffoldhunter/model/db/filter_data.hbm.xml"/>
+     	<mapping resource="edu/udo/scaffoldhunter/model/db/numfilter_data.hbm.xml"/>
+     	<mapping resource="edu/udo/scaffoldhunter/model/db/stringfilter_data.hbm.xml"/>
+     	<mapping resource="edu/udo/scaffoldhunter/model/db/mapping_gradients.hbm.xml"/>
+       	<mapping resource="edu/udo/scaffoldhunter/model/db/mapping_intervals.hbm.xml"/>
+       	<mapping resource="edu/udo/scaffoldhunter/model/db/bookmarkfolders.hbm.xml"/>
+      	<mapping resource="edu/udo/scaffoldhunter/model/db/bookmarks.hbm.xml"/>
+      	<mapping resource="edu/udo/scaffoldhunter/model/db/session_data.hbm.xml"/>
+      	<mapping resource="edu/udo/scaffoldhunter/model/db/subset_data.hbm.xml"/>
+       	<mapping resource="edu/udo/scaffoldhunter/model/db/comments.hbm.xml"/>
+       	<mapping resource="edu/udo/scaffoldhunter/model/db/tree.hbm.xml"/>
+       	<mapping resource="edu/udo/scaffoldhunter/model/db/rulesets.hbm.xml"/>
+       	<mapping resource="edu/udo/scaffoldhunter/model/db/rules.hbm.xml"/>
+       	<mapping resource="edu/udo/scaffoldhunter/model/db/dataset.hbm.xml"/>
+       	<mapping resource="edu/udo/scaffoldhunter/model/db/structure_data.hbm.xml"/>
+       	<mapping resource="edu/udo/scaffoldhunter/model/db/molecule_data.hbm.xml"/>
+       	<mapping resource="edu/udo/scaffoldhunter/model/db/scaffold_data.hbm.xml"/>
+       	<mapping resource="edu/udo/scaffoldhunter/model/db/property_definition.hbm.xml"/>
+       	<mapping resource="edu/udo/scaffoldhunter/model/db/scaffold_string_properties.hbm.xml"/>
+       	<mapping resource="edu/udo/scaffoldhunter/model/db/scaffold_num_properties.hbm.xml"/>
+       	<mapping resource="edu/udo/scaffoldhunter/model/db/molecule_string_properties.hbm.xml"/>
+       	<mapping resource="edu/udo/scaffoldhunter/model/db/molecule_num_properties.hbm.xml"/>
+       	<mapping resource="edu/udo/scaffoldhunter/model/db/banners.hbm.xml"/>
+       	<mapping resource="edu/udo/scaffoldhunter/model/db/pluginconfig_data.hbm.xml"/>
+       	<mapping resource="edu/udo/scaffoldhunter/model/db/svg_data.hbm.xml"/>
+       	<mapping resource="edu/udo/scaffoldhunter/model/db/mol_data.hbm.xml"/>
+    </session-factory>
+</hibernate-configuration>

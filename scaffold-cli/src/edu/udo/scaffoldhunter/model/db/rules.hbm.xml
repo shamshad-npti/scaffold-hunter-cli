@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="edu.udo.scaffoldhunter.model.db">
+
+	<class name="Rule" table="rules">
+		<id name="id" column="rule_id" access="field">
+			<generator class="native"/>
+		</id>
+		<property name="rule" not-null="true">
+			<type name="org.hibernate.type.EnumType">
+				<param name="enumClass">edu.udo.scaffoldhunter.model.RuleType</param>
+				<!-- java.sql.Types.VARCHAR -->
+				<param name="type">12</param>
+			</type>
+		</property>
+		<property name="ascending" type="boolean" not-null="true"/>
+		<property name="order" column="order_nr" type="integer" not-null="true" unique-key="order_ruleset_unique_constraint"/>
+		<many-to-one name="ruleset" column="ruleset_id" class="Ruleset" unique-key="order_ruleset_unique_constraint" lazy="false" not-null="true"/>
+	</class>
+
+</hibernate-mapping>

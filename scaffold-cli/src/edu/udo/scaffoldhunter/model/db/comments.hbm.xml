@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="edu.udo.scaffoldhunter.model.db">
+
+	<class name="Comment" table="comments">
+		<id name="id" column="comment_id" access="field">
+			<generator class="native"/>
+		</id>
+		<many-to-one name="tree" class="Tree" column="tree_id" lazy="no-proxy"/>
+		<property name="smiles" type="text" not-null="true"/>
+		<property name="molecule" type="boolean" not-null="true"/>
+		<property name="private" type="boolean" not-null="true"/>
+		<many-to-one name="modifiedBy" class="Profile" column="profile_id" lazy="no-proxy" not-null="true"/>
+		<property name="modificationDate" type="timestamp" not-null="true"/>
+		<property name="comment" type="text" not-null="true"/>
+		<many-to-one name="dataset" class="Dataset" column="dataset_id" lazy="no-proxy" not-null="true"/>
+	</class>
+
+</hibernate-mapping>

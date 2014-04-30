@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="edu.udo.scaffoldhunter.model.db">
+
+	<class name="Preset" table="presets">
+		<id name="id" column="preset_id" access="field">
+			<generator class="native"/>
+		</id>
+		<property name="title" type="text" not-null="true"/>
+		<many-to-one name="profile" class="Profile" column="profile_id" lazy="false"/>
+	</class>
+
+</hibernate-mapping>

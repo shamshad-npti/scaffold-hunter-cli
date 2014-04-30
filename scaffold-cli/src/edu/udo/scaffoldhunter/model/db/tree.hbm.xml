@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="edu.udo.scaffoldhunter.model.db">
+
+	<class name="Tree" table="tree">
+		<id name="id" column="tree_id" access="field">
+			<generator class="native"/>
+		</id>		
+		<property name="title" type="string" not-null="true" unique-key="title_dataset_unique_constraint"/>
+		<property name="deglycosilate" type="boolean" not-null="true"/>
+		<property name="comment" type="text" not-null="true"/>
+		<many-to-one name="dataset" class="Dataset" column="dataset_id" lazy="false" unique-key="title_dataset_unique_constraint"/>
+		<many-to-one name="createdBy" class="Profile" column="profile_id" lazy="no-proxy" not-null="true"/>
+		<property name="creationDate" type="timestamp"/>
+		<many-to-one name="ruleset" class="Ruleset" column="ruleset_id" lazy="false"/>
+		<!--   this is for deleting all scaffolds referencing the tree if the tree gets deleted    -->
+		<set name="scaffolds" access="noop" inverse="true" cascade="delete">
+			<key column="tree_id" not-null="true" on-delete="cascade"/>
+			<one-to-many class="Scaffold"/>
+        </set>
+		<!--   this is for deleting all sessions referencing the tree if the tree gets deleted    -->
+		<set name="sessions" access="noop" inverse="true" cascade="delete">
+			<key column="tree_id" not-null="true" on-delete="cascade"/>
+			<one-to-many class="Session"/>
+        </set>
+		<!--   this is for deleting all comments referencing the tree if the tree gets deleted    -->
+		<set name="comments" access="noop" inverse="true" cascade="delete">
+			<key column="tree_id" not-null="true" on-delete="cascade"/>
+			<one-to-many class="Comment"/>
+        </set>
+		<!--   this is for deleting all banners referencing the tree if the tree gets deleted    -->
+		<set name="banners" access="noop" inverse="true" cascade="delete">
+			<key column="tree_id" not-null="true" on-delete="cascade"/>
+			<one-to-many class="Banner"/>
+        </set>
+	</class>
+
+</hibernate-mapping>

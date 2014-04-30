@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="edu.udo.scaffoldhunter.model.db">
+
+	<class name="Profile" table="profiles">
+		<id name="id" column="profile_id" access="field">
+			<generator class="native"/>
+		</id>
+		<property name="username" type="string" not-null="true" unique="true"/>
+		<property name="password" type="byte[]" not-null="true"/>
+		<property name="salt" type="byte[]" not-null="true"/>
+		<property name="configData" type="text"/>
+		<many-to-one name="currentSession" class="Session" column="current_session_id" 
+			lazy="no-proxy" not-found="ignore" foreign-key="none"/>
+		<set name="presets" lazy="false" inverse="true" cascade="delete">
+         	<key column="profile_id" on-delete="cascade"/>
+         	<one-to-many class="Preset"/>	
+        </set>
+        <set name="bookmarkFolders" lazy="false" inverse="true" cascade="delete">
+         	<key column="profile_id" on-delete="cascade"/>
+         	<one-to-many class="BookmarkFolder"/>
+        </set>
+        <!--   this is for deleting all sessions referencing the profile if the profile gets deleted    -->
+		<set name="sessions" access="noop" inverse="true" cascade="delete">
+			<key column="profile_id" not-null="true" on-delete="cascade"/>
+			<one-to-many class="Session"/>
+        </set>
+        <!--   this is for deleting all Banners referencing the Profile if the tree gets deleted    -->
+		<!--   Attention: This also deletes all public Banners 
+		(currently deleting a profile is not supported by the program, 
+		so one should rethink this behavior when its needed)      -->
+		<set name="banners" access="noop" inverse="true" cascade="delete">
+			<key column="profile_id" not-null="true" on-delete="cascade"/>
+			<one-to-many class="Banner"/>
+        </set>
+	</class>
+
+</hibernate-mapping>
+

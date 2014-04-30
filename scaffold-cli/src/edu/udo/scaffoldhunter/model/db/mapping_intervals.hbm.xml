@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="edu.udo.scaffoldhunter.model.db">
+
+	<class name="MappingInterval" table="mapping_intervals">
+		<id name="id" column="mapping_intervals_id" access="field">
+			<generator class="native"/>
+		</id>
+		
+		<property name="lowerBound" type="float" not-null="true"/>
+		<property name="value" type="float"/>
+		<property name="color" type="java.awt.Color"/>
+		<many-to-one name="mapping" class="Mapping" column="preset_id" lazy="false"/>
+	</class>
+
+</hibernate-mapping>

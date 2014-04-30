@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="edu.udo.scaffoldhunter.model.db">
+
+	<joined-subclass name="Molecule" extends="Structure" table="molecule_data">
+		<key column="structure_id" on-delete="cascade"/>
+		<many-to-one name="dataset" class="Dataset" column="dataset_id" not-null="true" lazy="no-proxy"/>
+		<!--   this is for deleting all num_properties referencing the molecule if the molecule gets deleted    -->
+		<set name="numProperties" access="noop" inverse="true" cascade="delete">
+			<key column="structure_id" not-null="true" on-delete="cascade"/>
+			<one-to-many class="MoleculeNumProperty"/>
+        </set>
+		<!--   this is for deleting all string_properties referencing the molecule if the molecule gets deleted    -->
+		<set name="stringProperties" access="noop" inverse="true" cascade="delete">
+			<key column="structure_id" not-null="true" on-delete="cascade"/>
+			<one-to-many class="MoleculeStringProperty"/>
+        </set>
+		<!-- For Properties see DbManager.lockAndLoad function -->
+	</joined-subclass>
+	
+</hibernate-mapping>

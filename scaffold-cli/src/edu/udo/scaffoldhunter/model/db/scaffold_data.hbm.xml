@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="edu.udo.scaffoldhunter.model.db">
+
+	<joined-subclass name="Scaffold" extends="Structure" table="scaffold_data">
+		<key column="structure_id" on-delete="cascade"/>
+		<many-to-one name="tree" class="Tree" column="tree_id"
+			not-null="true" lazy="no-proxy" />
+		<many-to-one name="parent" class="Scaffold" column="parent_id"
+			lazy="false" />
+		<property name="hierarchyLevel" type="integer" not-null="true" />
+		<property name="deletionRuleParent">
+			<type name="org.hibernate.type.EnumType">
+				<param name="enumClass">edu.udo.scaffoldhunter.model.RuleType</param>
+				<!-- java.sql.Types.VARCHAR -->
+				<param name="type">12</param>
+			</type>
+		</property>
+		<!-- only used for generation of molecule_scaffold_relationships -->
+		<set name="generationMolecules" table="molecule_scaffold_relationship" cascade="delete">
+			<key column="scaffold_id" foreign-key="none"/>
+			<many-to-many column="molecule_id" class="Molecule" foreign-key="none"/>
+		</set>
+		<!--   this is for deleting all children referencing the scaffold if the scaffold gets deleted    -->
+		<set name="allChildren" inverse="true" access="noop" cascade="delete">
+			<key column="parent_id" on-delete="cascade"/>
+			<one-to-many class="Scaffold"/>
+		</set>
+		<!--   this is for deleting all num_properties referencing the scaffold if the scaffold gets deleted    -->
+		<set name="numProperties" access="noop" inverse="true" cascade="delete">
+			<key column="structure_id" not-null="true" on-delete="cascade"/>
+			<one-to-many class="ScaffoldNumProperty"/>
+        </set>
+		<!--   this is for deleting all string_properties referencing the scaffold if the scaffold gets deleted    -->
+		<set name="stringProperties" access="noop" inverse="true" cascade="delete">
+			<key column="structure_id" not-null="true" on-delete="cascade"/>
+			<one-to-many class="ScaffoldStringProperty"/>
+        </set>
+		<!-- For Properties see DbManager.lockAndLoad function -->
+	</joined-subclass>
+		
+	<database-object>
+		<create>ALTER TABLE `molecule_scaffold_relationship`  
+  			ADD CONSTRAINT `fk_molecule_for_msr` 
+  			FOREIGN KEY (`molecule_id` ) 
+  			REFERENCES `molecule_data` (`structure_id`) 
+  			ON DELETE CASCADE 
+  			ON UPDATE NO ACTION, 
+  			ADD CONSTRAINT `fk_scaffold_for_msr` 
+  			FOREIGN KEY (`scaffold_id` ) 
+  			REFERENCES `scaffold_data` (`structure_id`) 
+			ON DELETE CASCADE 
+			ON UPDATE NO ACTION, 
+			ADD INDEX `fk_molecule_for_msr` (`molecule_id` ASC),
+			ADD INDEX `fk_scaffold_for_msr` (`scaffold_id` ASC);
+		</create>
+		<drop>ALTER TABLE `molecule_scaffold_relationship` 
+			DROP FOREIGN KEY `fk_scaffold_for_msr`, 
+			DROP FOREIGN KEY `fk_molecule_for_msr`;
+		</drop>
+		<dialect-scope name="org.hibernate.dialect.MySQL5InnoDBDialect" />
+	</database-object>
+	<database-object>
+		<create>ALTER TABLE molecule_scaffold_relationship  
+  			ADD CONSTRAINT fk_molecule_for_msr 
+  			FOREIGN KEY (molecule_id ) 
+  			REFERENCES molecule_data (structure_id) 
+  			ON DELETE CASCADE 
+  			ON UPDATE NO ACTION;
+  			ALTER TABLE molecule_scaffold_relationship
+  			ADD CONSTRAINT fk_scaffold_for_msr 
+  			FOREIGN KEY (scaffold_id ) 
+  			REFERENCES scaffold_data (structure_id) 
+			ON DELETE CASCADE 
+			ON UPDATE NO ACTION;
+		</create>
+		<drop>ALTER TABLE molecule_scaffold_relationship 
+			DROP FOREIGN KEY fk_scaffold_for_msr, 
+			DROP FOREIGN KEY fk_molecule_for_msr;
+		</drop>
+		<dialect-scope name="edu.udo.scaffoldhunter.model.db.HSQLDialectValid" />
+		<dialect-scope name="org.hibernate.dialect.HSQLDialect" />
+	</database-object>
+	
+</hibernate-mapping>

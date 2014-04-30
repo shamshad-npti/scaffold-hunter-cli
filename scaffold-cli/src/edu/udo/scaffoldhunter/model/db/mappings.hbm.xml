@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="edu.udo.scaffoldhunter.model.db">
+
+	<joined-subclass name="Mapping" extends="Preset" table="mappings">
+		<key column="preset_id" on-delete="cascade" />
+		<property name="visualFeature" not-null="true">
+			<type name="org.hibernate.type.EnumType">
+				<param name="enumClass">edu.udo.scaffoldhunter.model.VisualFeature</param>
+				<!-- java.sql.Types.VARCHAR -->
+				<param name="type">12</param>
+			</type>
+		</property>
+
+		<property name="cumulative" type="boolean" not-null="true" />
+		<property name="mappingType" not-null="true">
+			<type name="org.hibernate.type.EnumType">
+				<param name="enumClass">edu.udo.scaffoldhunter.model.MappingType</param>
+				<!-- java.sql.Types.VARCHAR -->
+				<param name="type">12</param>
+			</type>
+		</property>
+
+		<!-- This is a one-to-one (see unique) -->
+		<many-to-one name="gradient" class="MappingGradient" column="gradient_id" cascade="all" unique="true" lazy="false" />
+		<many-to-one name="propertyDefinition" class="PropertyDefinition" column="property_defintion_key" property-ref="key" not-null="true" lazy="false" foreign-key="none" />
+		<list name="orderedIntervals" inverse="true" lazy="false" cascade="delete">
+			<key column="preset_id" on-delete="cascade" />
+			<index column="lowerBound" />
+			<one-to-many class="MappingInterval" />
+		</list>
+		<property name="function" not-null="false">
+			<type name="org.hibernate.type.EnumType">
+				<param name="enumClass">edu.udo.scaffoldhunter.model.AccumulationFunction</param>
+				<!-- java.sql.Types.VARCHAR -->
+				<param name="type">12</param>
+			</type>
+		</property>
+	</joined-subclass>
+
+</hibernate-mapping>
