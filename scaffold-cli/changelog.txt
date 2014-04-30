@@ -1,0 +1,110 @@
+v2.3.1
+	- Improved property mapping
+		* New options to determine min/max values of color gradients
+		* Consistent color mapping across views and subsets
+	- Subsets:
+		* Improved performance and consistency of subset operations
+		* Random subset generation
+		* Splitting subsets by scaffold subtrees
+	- Tree Map view:
+		* Fixed various minor flaws
+		* Image export functionality
+	- Scaffold Tree view:
+		* Improved depiction of sorting labels
+		* Fixed infobars for cumulative values
+		* Improved performance
+	- Plot view: 
+		* Fixed zooming to multiple/individual molecules
+		* Improved depiction of selected molecules
+		* Improved performance
+	- Sessions:
+		* Dialog to select initially opened views for new sessions
+		* Fixed restoration of split views
+	- Fixed SDF export
+	- Atom count property calculation plugin
+	- Preliminary Command Line Interface for scaffold network generation
+	- Numerous GUI improvements concerning layout and dialogs
+	- Several minor bugfixes
+	
+v2.3.0
+	- Tree Map view for visualization of scaffold hierarchies
+	- Improved session restoration including selection
+	- Scaffold Tree View:
+		* Improved sorting of scaffold tree
+		* Improved property mapping
+		* Fixed mapping of partially undefined properties
+		* Edge color gradient to highlight selection
+		* Improved adjustment of level distances
+	- Depiction of molecules without explicit hydrogens
+	- Scaffold Tree generation: fixed custom rule RRPlinkerLenX
+	- Unified shortcuts and default color mappings in all views
+	- Updated CDK to version 1.4.19
+	- Updated Piccolo toolkit to version 1.3.2
+	- Various performance and GUI improvements
+	- Numerous minor bugfixes
+	
+  Please note that this release breaks compatibility with sessions created by 
+  previous versions of Scaffold Hunter. Old sessions can not be resumed! 
+
+v2.2.0
+	- Selection Browser to locate selected molecules in different views
+	- Scaffold Tree Generation: Fixed incomplete pruning of scaffolds
+	- Clustering: Fixed centroid linkage
+	- Import: More robust automated detection of property types
+	- Uniform default logging level
+	- Improved start scripts
+	
+v2.1.2
+	- Improved property loading for large datasets
+	- Revised several dialogs concerning layout and resize behavior
+	- Improved quality of heuristic SAHN clustering
+	- Improved import dialog: More intuitive merging by property
+	- Fixed special cases when merging by property
+	
+v2.1.1
+	- Fixed random crashes of clustering algorithm on machines with > 4GB RAM
+	- Fixed exact clustering with centroid and median linkage (Generic clustering + Forward NNSearch)
+	- Fixed distance measure TanimotoBit
+	- Improved canonicalization of molecules/scaffolds
+	- Fixed export functionality to account for infobars and labels
+	- Updated CDK to version 1.4.17 to support Java 7
+	- Fixed resource leaks
+	- Various minor improvements and bugfixes
+	
+v2.1.0
+	- Added heuristic SAHN clustering for large datasets
+	- Improved clustering configuration panel
+	- Improved handling of binary fingerprints
+	- Updated Piccolo toolkit to version 1.3.1
+	- Fixed canonicalization of molecules/scaffolds to avoid duplicates
+	- Various minor improvements and bugfixes
+	
+  Please note that this release breaks compatibility with sessions created by 
+  previous versions of Scaffold Hunter. Old sessions can not be resumed!
+
+v2.0.1
+	- New data calculation plugin: CDK path-based hash key fingerprint
+	- Improved progress indicator for cluster analysis
+	- Fixed dendrogram view: The height of a branch now corresponds to the associated dissimilarity
+	- Improved CSV import plugin
+
+v2.0 Initial public release of version 2 including numerous new features
+
+v1.7.1
+	- More robust SD file handling
+	- Fixed iterative filtering with multiple filter rules combined with substructure search
+
+v1.7
+	- Improved database query performance
+	- Faster calculation of fingerprints
+	- Updated Piccolo toolkit to version 1.3
+	- Various minor improvements and bugfixes
+
+v1.6
+	- Substructure search functionality
+	- Cumulative property bins
+	- Updated Piccolo toolkit to version 1.2.1
+	- Various minor improvements and bugfixes
+	- Scaffold Tree Generator: 2D coordinate generation
+
+v1.5 Initial public release

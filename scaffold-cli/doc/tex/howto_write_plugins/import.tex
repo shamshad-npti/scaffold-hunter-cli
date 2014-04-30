@@ -1,0 +1,154 @@
+\subsection{What is needed to write a new import plugin}
+To write a new import plugin you need the \sh source code. The plugins basis is held in the \javapackage{edu.udo.scaffoldhunter.plugins.dataimport}. You should put every new plugin inside the \javapackage{edu.""udo.""scaffoldhunter.""plugins.""dataimport.""impl.""PLUGINNAME} package.
+
+\subsection{Basic parts of a plugin}
+Every import plugin consists of three base classes:
+
+\paragraph{PluginSettingsPanel}
+At first a class on base of \javaclass{PluginSettingsPanel}. This is a \javaclass{JPanel} which shows the configuration options of the plugin in the Import Dialog. It has methods to get and set the current configuration options and those which have been set in the past.
+
+\paragraph{PluginResults}
+The \javaclass{PluginResults} are built on base of a plugin run and contain all results of the specific plugin with a given configuration. At first there are some basic results, such as the number of results, name of the rows in resulting data, which of those rows maybe numeric, and finally iterables consisting of the molecules.
+
+\paragraph{ImportPlugin}
+The import plugin itself is the interface to \sh. It gives instances of the \javaclass{PluginSettingsPanel} and the \javainterface{PluginResults} back, has a method to test if a configuration will give useable results or fail in the beginning and has some basic information, as name and an UID.
+
+Next to those classes there are the \javaclass{Arguments}, which is a simple \javaclass{Object} consisting of a current configuration and a class implementing the \javainterface{Serializeable} interface which contains data, which is saved into the database. It could be used to save older settings.
+
+\subsection{Writing a simple plugin}
+The source tree already consists of a very simple plugin, it is named \javaclass{DummyImportPlugin}. In this part you will get a step by step guide whose result will be such a simple plugin, which can generate a simple error message and gives two empty molecules back.
+
+\subsection{First Version - An empty configuration panel}
+The source of the first version can be found in the \javapackage{edu.""udo.""scaffoldhunter.""plugins.""dataimport.""impl.""example1} package. This example contains everything that is needed to be listed in the Import Dialog. With this example you are not able to go further through the import process, it does not give back all needed parts. Lets look at the important parts of the source.
+
+\subsubsection{ImportPlugin.java}
+\paragraph{@PluginImplementation}
+The first important thing is the Annotation \javaannotation{@PluginImplementation}. This is needed by the used plugin framework to recognize this class as a plugin. If this line is missing, the plugin will not be listed in the import dialog.
+
+\paragraph{extends AbstractImportPlugin}
+Your import plugin has to inherit from \javaclass{AbstractImportPlugin}. If instead of this you only go and implement the \javainterface{ImportPlugin} interface there will be a wrong name in the list of import sources in the import dialog.
+
+\paragraph{getTitle()}
+The \javamethod{getTitle()} method returns a short name of the plugin. This is also the name which is listed in the import dialog.
+
+\paragraph{getID()}
+In \javamethod{getID()} your plugin should return a unique name of the plugin, this is for example used by \sh to match saved properties for the plugins. During the development process of \sh all Plugins used the form      \verb+CLASSNAME_VERSION+ that should be unique enough.
+
+\paragraph{getDescription()}
+The \javamethod{getDescription()} method returns a description about for what the import plugin can be used, like "This is an import plugin which can be used to import data from our internal webfrontend".
+
+\paragraph{getSettingsPanel(settings,arguments)}
+Here we return only an empty \javaclass{SettingsPanel}. This will change in the third example.
+
+\paragraph{getResults(arguments)}
+In the first example we don't have a result object yet.
+
+\paragraph{checkArguments(arguments)}
+Inside of the \javamethod{checkArguments(arguments)} method you should check if a plugin run will definitely fail, then you return an error message, otherwise null. In this example we return a message to interrupt the import process. Otherwise the Example1 plugin would cause errors in the future.
+
+
+\subsection{Second Version - We give a simple result}
+In the second step we will add an \javaclass{ImportPluginResult} object, which will give back one molecule without a structure but with two properties (one will be numerical).
+
+\subsubsection{Example2ImportPluginResults.java}
+As a new part in the second Example we have a \javaclass{PluginResults} class. This class has to implement the \javainterface{PluginResults} interface. Let us go through the new methods.
+
+\paragraph{getSourceProperties()}
+In the \javamethod{getSourceProperties()} method you have to give back a Map of \javaclass{PropertyNames}. The Map can also include \javaclass{PropertyDefinitions}, which  could build the base for a more detailed way of defining the type of the property, which should be implemented in further versions of \sh, most times a null-value for the \javaclass{PropertyDefinition} part is sufficient. So we generate a new Set with the two property names "title" and "number".
+
+\paragraph{getProbablyNumeric()}
+The \javamethod{getProbablyNumeric()} method gives back a Set of strings containing the property names of those properties which contain numeric values. It is used in the mapping dialog to automatically select which properties should be treated as numbers. In this example it is the property "number".
+
+\paragraph{getMolecules()}
+This method contains the main plugin task. It returns the \javainterface{Iterable} which contains the new molecules. Here we create a No Notifying Molecule (\javaclass{NNMolecule}). The usage of \javaclass{NNMolecule} in place of \javaclass{Molecule} has a very high positive impact on the import speed. We add our two properties to the molecule and put it into a simple List which we return. When you write your own plugin you will probably write your own class implementing the \javainterface{Iterable} interface.
+
+\paragraph{getNumMolecules()}
+The \javamethod{getNumMolecules()} method returns the number of molecules which will be imported. We built one \javaclass{Molecule} so we return 1.
+
+\paragraph{addMessageListener(listener), removeMessageListener(listener)}
+The \javamethod{add/removeMessageListener} methods will be used to give fault messages during the import process, so we just ignore them now.
+
+\subsubsection{Example2ImportPlugin.java}
+In the plugin itself there are only small changes.
+
+\paragraph{getResults(arguments)}
+The created \javainterface{PluginResults} implementation is returned.
+
+\paragraph{checkArguments(arguments)}
+We return something, so do not generate an error message and return null.
+
+
+\subsection{Third Version - Settings panel}
+The third example adds a very simple Settings Panel to the plugin where we can type in the molecule title and an error message for the \javamethod{checkArguments(arguments)} method.
+
+\subsubsection{Example3PluginArguments.java}
+At first there is a new Class, \javaclass{Example3PluginArguments}, which holds the arguments for a single plugin run. This is a very simple class with three fields:
+\begin{itemize}
+  \item \javatype{boolean} error : Will be true, if the plugin should generate an error message in the \javamethod{checkArguments} method.
+  \item \javaclass{String} errorMessage : The message which will be given back if the plugin generates an error message.
+  \item \javaclass{String} moleculeTitle : The content of the title property in the molecule.
+\end{itemize}
+
+\subsubsection{Example3PluginSettingsPanel.java}
+The second new class is the \javaclass{Example3PluginConfigurationPanel}. So we are able to fill the configuration panel within the import dialog with content.
+
+\paragraph{Example3PluginSettingsPanel(arguments)}
+The constructor first checks if the ConfigurationPanel got an arguments object, this happens when you select an item in the import jobs list of the import dialog. If it does not get an \javaclass{Example3PluginArguments} object it generates a new one with the default values. Afterwards the different parts of the Panel are generated, with the values from the arguments object and then some formatting is done.
+
+\paragraph{getSettings()}
+We do not safe any settings, so this method returns null. If you want to have saveable settings generate a new class that implements \javainterface{Serializeable} which holds those settings. An instance of this class with the content which should be saved has to be returned here.
+
+\paragraph{getArguments()}
+The \javamethod{getArguments()} method returns the current settings being made in a \javaclass{Example3PluginArguments} object. So here we read the \javaclass{JCheckBox} state, and the content of the two \javaclass{JTextField} instances and put them to the corresponding fields in the returned object.
+
+
+\subsubsection{Example3ImportPluginResults.java}
+In the Results class we only had to add the arguments and built the molecule title property on it.
+So first there is a new private field \javaclass{Example3ImportPluginArguments} which holds the arguments for the plugin run.
+
+\paragraph{Example3ImportPluginResults(arguments)}
+The new constructor just sets the internal arguments field to the supplied arguments. When you write a plugin you should put some initialization here, like opening database connections, counting of molecules, etc.
+
+\paragraph{getMolecules()}
+In the \javamethod{getMolecules()} method we set the title property according to the \javavar{moleculeTitle} field in the arguments.
+
+\subsubsection{Example3ImportPlugin.java}
+
+\paragraph{getSettingsPanel(settings,arguments)}
+Here our new \javaclass{SettingsPanel} is returned and we cast the arguments into the right type.
+
+\paragraph{getResults(arguments)}
+Same for the results, they now await arguments, so the class gets them.
+
+\paragraph{checkArguments(arguments)}
+Now we are able to check, if a plugin run will "succeed" so we either give the error message from the arguments if the user wants it or return null.
+
+\subsection{Fourth and last version - Output a message during the import}
+At this point you are able to build configurations, check for an error at the beginning of the import and return molecules. There is only one last part missing, the possibility to send Messages during the import. This is realized in the \javaclass{Example4ImportPlugin}.
+
+\subsubsection{Example4ImportPluginArguments.java}
+At first we added a new configuration option to switch the message on or off. It is named \javavar{generateMessage}.
+
+\subsubsection{Example4ImportPluginSettingsPanel.java}
+In the Settings panel the default value for the \javavar{generateMessage} is added. Furthermore there is a \javaclass{JCheckBox} added, to switch the Message on or off.
+
+\subsubsection{Example4ImportPluginResults.java}
+In the \javaclass{Example4ImportPluginResults} some changes have been made. First there is a LinkedList which holds the listeners which are registered with the results.
+
+\paragraph{addMessageListener(listener)}
+The \javamethod{addMessageListener(listener)} method now adds the given listener to the \javavar{messageListeners} list.
+
+\paragraph{removeMessageListener(listener)}
+The \javamethod{removeMessageListener(listener)} method now removes the given listener from the \javavar{messageListeners} list.
+
+\paragraph{getMolecules()}
+The \javamethod{getMolecules()} method has been rewritten. Instead of a simple List it now returns a self written \verb+Iterable<Molecule>+, which still gives back our simple Molecule. But in the \javamethod{getNext()} method of the included \verb+Iterator<Molecule>+ the argument generateMessage is checked and if we should send a Message a new instance of the type \javaclass{edu.udo.scaffoldhunter.model.data.Message} is generated which consists of a Message saying that the Molecule structure on base of a SMILES string could not be generated.
+You only need to give a type of the message to the constructor of the message, the name can be empty and the other two arguments null, they are set in other parts of the import process. Some MessageTypes are already  defined in the \javaclass{edu.udo.scaffoldhunter.model.dataimport.MergeMessageTypes} class. Two of them should be useful for import plugins:\\
+\begin{table}[!htb]
+  \begin{tabular}{ll}
+    \textbf{Name}	& \textbf{Description}\\ \toprule
+    \verb+MOLECULE_BY_SMILES_FAILED+	& Can't build Molecule on base of SMILES\\ \midrule
+    \verb+MOLECULE_BY_MOL_FAILED+	& Can't build Molecule on base of MOL\\ \bottomrule
+  \end{tabular}
+\end{table}
+If you need other MessageTypes just implement them using the MessageType interface.

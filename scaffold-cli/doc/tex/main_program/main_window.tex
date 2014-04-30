@@ -1,0 +1,56 @@
+\sh includes several \emph{views}, that allow the user to visualize and navigate through the imported chemical data in various ways.
+Currently the following types of views are supported:
+
+\paragraph{\Stview}
+The \stview shows chemical structures arranged in a scaffold tree.
+This is the only type of visualization that was supported by \sh version 1.x, and is still a pivotal part of the application.
+
+\paragraph{\Dview}
+The \dview shows the result of a hierarchical clustering of chemical structures, supporting various linkage methods and distance measures.
+
+\paragraph{\Pview}
+The \pview shows molecules in a two- or three-dimensional scatter plot based on the molecules' properties.
+
+\paragraph{\Tview}
+The \tview shows molecules in tabular form, including their structure, description and properties.
+
+\paragraph{\Tmview}
+The \tmview shows chemical structures arranged in a tree map. Different properties can be visualized by mapping them to the size and color of structures within the tree map.
+\\
+
+See \secref{sec:scaffoldhunter:viewmanagement} for an explanation of how to open and manage views within \sh.
+The individual types of views are described in greater detail in \chapref{sec:scaffoldhunter:views}.
+\\
+Another concept crucial to \sh is that of subsets, as explained in \secref{sec:scaffoldhunter:subsetmanagement}.
+
+\section{Structure of the Main Window}
+
+The basic structure of the \sh main window stays the same regardless of the type of view that's currently in use.
+However, most of the individual parts of the user interface will change when switching between different views, to accommodate the functionality of each view type.
+\\
+\\
+The main window can roughly be divided into five parts:
+
+\paragraph{Menu bar}
+This is the main menu bar at the top of the \sh window, through which most of \sh's functionality is accessible.
+Most of the menu items are available regardless of the current view.
+One notable exception is the view-specific sub-menu, which changes to reflect the actions available in each given view type.
+
+\paragraph{Tool bar}
+The \tbar is located below the menu bar.
+Most of the \tbar items are view-specific, and will change when switching to a different type of view.
+
+\paragraph{View tabs}
+This tab bar is the central part of the \sh window, and contains tabs for each view.
+Managing views is described in \secref{sec:scaffoldhunter:viewmanagement}.
+
+\paragraph{Side bar}
+The \sbar is shown on the left hand side of the main window, and can optionally be hidden using the \gui{Show Side Bar} button in the \gui{Window} menu or in the \tbar.
+It consists of several panels that can be folded or expanded independently by clicking the corresponding caption bar.
+Each panel displays additional information about the data that is visible in the currently active view.
+
+\paragraph{Subset bar}
+The subset bar on the right hand side of the window shows a tree of all subsets in the current session.
+Like the \sbar, this part of the user interface can be hidden, using the \gui{Show Subset Bar} button in the \gui{Window} menu or in the \tbar.
+In addition to the subset tree, the subset bar also contains buttons for creating new subsets from the selection.
+Subset management is explained in detail in \secref{sec:scaffoldhunter:subsetmanagement}.

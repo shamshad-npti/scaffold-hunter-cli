@@ -1,0 +1,91 @@
+A central part of the \sh user interface is dedicated to the concept of \emph{subsets}.
+Each subset identifies a set of molecules, all of which are part of the main dataset (hence a subset thereof).
+Subsets are arranged in a tree structure, where each subset can have any number of child subsets.
+Every subset is guaranteed to contain only molecules that are also in its parent subset.
+
+At the top of the subset tree is the \emph{root subset}, which is automatically created when starting a new \sh session.
+The root subset may be identical to the dataset that has been imported, but it can also be smaller in case a filter was used when creating the session.
+
+
+\subsection{The Subset Tree}
+
+The subset tree is the main part of the subset bar at the right hand side of the \sh main window.
+In a newly created session, the tree contains only the root subset.
+All subsets, including the root subset, can be assigned a custom name and comment.
+The current subset, i.e. the subset that is shown in the currently active view, is always shown in bold.
+The subset tree itself only contains the name of each subset.
+Additional information about subsets can be obtained by hovering the mouse cursor above the subset name, which will pop up a tooltip window.
+
+Most functionality regarding subsets is available using the context menu of the subset tree.
+For convenience the main menu also contains the \gui{Subset} menu, which always refers to the current subset.
+
+
+\subsection{Creating Subsets from the Selection}
+The most straightforward way to create a new subset is by first selecting all molecules to be included in the subset, and then making a subset from the selection.
+Since there is only one, global selection in \sh, which may include molecules that are not part of the current view, there are two slightly different ways to decide which molecules are to be included in the new subset.
+
+\paragraph{Subset from the total selection}
+In order to create a subset including all selected molecules, regardless of the current view, choose \gui{Selection $\rightarrow$ Make Subset} in the main menu, or use the first \gui{Make Subset} button at the bottom of the subset bar.
+Since the new subset does not necessarily have any relation to any of the existing subsets, it will be added to the subset tree as a child of the root subset.
+
+\paragraph{Subset from the selection in the current view}
+To create a subset including only the selected molecules that are also in the current view, choose \gui{Selection $\rightarrow$ Make Subset from Current View}, or use the second \gui{Make Subset} button in the subset bar.
+the new subset is guaranteed to include no molecules that are not part of the current view's subset, so that subset will be used as its parent.
+
+
+\subsection{Deleting Subsets}
+
+The subset of the current view can be deleted by selecting \gui{Subset $\rightarrow$ Delete} from the main menu.
+In the subset tree, subsets are deleted by selecting them and choosing \gui{Delete} from the context menu.
+\\
+Deleting a subset always closes any open views currently associated with that subset.
+\\
+If the subset being deleted has any children, those will not automatically be deleted as well.
+Instead, they will be re-attached to the parent of the subset being deleted.
+It is not possible to delete the root subset.
+
+
+\subsection{Set Operations}
+
+The basic set operations of \emph{union}, \emph{intersection} and \emph{difference} can be used to create new subsets from existing subsets.
+Since these operations require a selection of two or more subsets, they are not available in the \gui{Subset} menu, but only in the context menu of the subset tree.
+\\
+As in many other user interfaces, the selection of multiple subsets in the tree is possible using \texttt{Ctrl + Left click} to add or remove a single subset to/from the selection.
+To select multiple adjacent subsets, \texttt{Shift + Left click} can be used.
+Once all the desired subsets have been selected, open the context menu by right-clicking on one of them, and choose \gui{Make Union}, \gui{Make Intersection} or \gui{Make Difference}.
+You will then be asked to enter a name for the new subset.
+
+Since the subset tree requires each subset to be an actual subset of its parent, the set operations differ slightly in where the newly created subset will be added to the tree.
+For the difference operation, the order of subsets is also relevant.
+
+\paragraph{Union}
+Generally speaking, none of the original subsets is a superset of the new subset.
+As a result the new subset cannot be added below any of them in the tree.
+In order to ensure that the new subset's position is both deterministic and as meaningful as possible, the parent will always be the lowest common ancestor of all the selected subsets.
+
+\paragraph{Intersection}
+All selected subsets would be a valid parent for the new subset.
+For deterministic results, the subset that was clicked on when opening the context menu will be the new subset's parent.
+
+\paragraph{Difference}
+Mathematically, the difference operation is only defined for two sets.
+The difference operation used here deviates from this definition by extending it to mean ``one subset, minus the union of an arbitrary number of other subsets''.
+The base subset, from which the others will be subtracted, is the one that was clicked on when opening the context menu.
+This is also the subset that will then become the new subset's parent.
+
+
+\subsection{Reducing Subsets}
+There are multiple ways to automatically create smaller subsets that are more convenient than manual selection when working with large datasets.
+
+\paragraph{Filtering}
+The same filtering that is available while creating a session can also be used on individual subsets.
+Select \gui{Subset $\rightarrow$ Filter} to start filtering the subset of the current view, or choose \gui{Filter} in the context menu of any subset in the subset tree.
+The \guidialog{Filter Dialog} itself works just like the one that is used during session creation, as described in \secref{sec:scaffoldhunter:filtering}.
+\\
+Once the filter settings have been applied, you will be asked to enter a name for the new subset, and the subset will be added to the subset tree as a child of the original subset.
+
+\paragraph{Creating Random Subsets}
+You may create a random subset of a dataset by selecting \gui{Random Subset}, either in the \gui{Subset} menu or the context menu. A dialog allows you to select the number of molecules that should be contained in the created subset.
+
+\paragraph{Splitting by Scaffold Subtrees}
+In order to create subsets based on the scaffold tree structure, you can select \gui{Split by Scaffold Subtrees}. A subset for each scaffold with a specified number of rings is created. A subset includes all molecules which belong to the scaffold or one of its descendants. Since multiple subsets are created by this function, you can specify a prefix for the newly created subsets. \sh automatically numbers the subsets consecutively and appends the number to the subset name.

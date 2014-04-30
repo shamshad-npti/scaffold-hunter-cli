@@ -1,0 +1,33 @@
+\section{I get OutOfMemory exceptions when importing / analyzing large data}
+Refer to \secref{sec:starting_sh} and increase the maximum available memory for the Java virtual machine.
+
+\section{Scaffold Hunter crashes when saving a session of a larger dataset}
+If you are running into database exceptions while saving a session of a larger dataset, this might be a problem with the maximum package size of \mysql. Please refer to \secref{sec:mysql_max_package_size} for further instructions about how to configure the \mysql server.
+
+\section{I cannot use all clustering options -- there are no properties available for some distance measures!}
+  Some distance measures are only applicable on molecule fingerprints.
+  Read \chapref{sec:scaffoldhunter:propertycalculation} to learn how to calculate additional properties like chemical fingerprints.
+
+\section{How can I prevent other users from getting access to my data?}
+  If you conduct a study with confidential data and do not want any other user to access \shs data, you need to configure the mysql server accordingly. Make sure that only authorized people have read access to the schema in which \shs data is stored. You can also install a mysql server on your local computer and limit the access to localhost.
+  If the performance is sufficient, you can also use the connection type \hsqldb in the \figref{fig:databases_dialog}, and save the database file on a secure place somewhere on your harddisk.
+
+\section{I have lost my password, how can I access my data?}
+  As \sh saves your password encrypted, there is no possibility to restore your password.
+  But it is possible to create a new password.
+  First you need a tool to manage \mysql databases (for example: \mysql-Workbench\footnote{\url{http://www.mysql.de/products/workbench/}}).
+  Start \sh and go to the \guidialog{StartDialog}. Create a new user and note username and password.
+  Open the database management tool of your choice and connect to the database using the data you used in the \guidialog{Connection Dialog} shown on \figref{fig:databases_dialog}.
+  After you have connected to the database, you will probably see a long list of database tables.
+  Select the table \texttt{profiles} and edit the table data.
+  Search for the two rows showing your old and your newly created username.
+  Copy the data of the fields \texttt{password} and \texttt{salt} from the row corresponding the new username to the fields in the row corresponding your old username.
+  Submit your changes and exit the management tool.
+  Now start \sh and login with your old username and the newly created password.
+  Thats it.
+  \warningbox{WARNING}{Be careful while editing the database. Please make a backup of the database prior to editing. Only follow the above instructions if you exactly know what you are doing.}
+
+\section{The tooltip window annoys me!}
+  In order to disable the \guidialog{Tooltip window} select \texttt{Session $\rightarrow$ Preferences $\rightarrow$ General Configuration} from \shs menu bar
+  and disable the checkbox labeled \gui{enable tooltips}. Instead of disabling the tooltip, you can adjust the other tooltip settings as well.
+  It is possible to change the maximum size of the structure image shown in the tooltip or to select the tooltip popup delay.

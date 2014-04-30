@@ -1,0 +1,17 @@
+\label{sec:starting_sh}
+To launch \sh, simply run the supplied start-script (\texttt{run.cmd} on Windows or \texttt{run.sh} on Unix/Linux/Mac).
+If you want to work with large datasets, you may want to increase the maximum memory available for your application.
+Be sure your computer has enough physical memory available.
+Increasing the usable memory can have a positive impact on \sh's performance, too.
+
+The default start-script specifies a maximum of 1 GiB of memory.
+To increase the available memory, edit the start-script with a text editor,
+find the line displayed below and change \texttt{1024m} to whatever amount of memory you would like to be available to \sh.
+If you want to specify the amount in GiB you can write, e.g., \texttt{1g}.
+
+\begin{description}
+ \item[run.cmd (Windows):] \texttt{set memory=1024m}
+ \item[run.sh (Linux/Unix/Mac):] \texttt{memory=1024m}
+\end{description}
+
+\warningbox{Warning}{If you experience a \textit{java.lang.OutOfMemoryException: Java heap space} error, try to increase the memory as described above.}

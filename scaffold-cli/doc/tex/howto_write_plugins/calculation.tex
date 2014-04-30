@@ -1,0 +1,347 @@
+\subsection{What is needed to write a new calculation plugin}
+To write a new calc plugin you need the \sh source code.
+The calc plugin interfaces and helper classes are stored in the following packages:
+
+\begin{itemize}
+  \item \javapackage{edu.udo.scaffoldhunter.plugins}
+  \item \javapackage{edu.udo.scaffoldhunter.plugins.datacalculation}
+  \item \javapackage{edu.udo.scaffoldhunter.model.data}
+  \item \javapackage{edu.udo.scaffoldhunter.model.datacalculation}
+\end{itemize}
+
+Your plugin should be placed in a new package called
+\javapackage{edu.""udo.""scaffoldhunter.""plugins.""datacalculation.""impl.""PLUGINNAME},
+where PLUGINNAME should be replaced by the name of your plugin.
+
+\subsection{Basic parts of a plugin}
+Every import plugin consists of three base classes:
+
+  \paragraph{PluginSettingsPanel}
+  At first a class on base of \javaclass{PluginSettingsPanel}
+  from \javapackage{edu.""udo.""scaffoldhunter.""plugins}.
+  This is a \javaclass{JPanel} which shows the configuration options of the plugin
+  in the \guidialog{Calc Dialog} (See \figref{fig:createcalcjobdialog}).
+  It has methods to get and set the current configuration options
+  and those which have been set in the past.
+
+  \paragraph{CalcPluginResults}
+  The \javaclass{CalcPluginResults} class is constructed during a plugin run
+  and contains all results of the specific plugin with a given configuration.
+  With help of the \javaclass{CalcPluginResults} class the calc plugin
+  tells the plugin system which properties where calculated and
+  supplies an \javainterface{Iterable} over all molecules
+  (the calculated properties are attached to those molecules).
+
+  \paragraph{CalcPlugin}
+  The calc plugin itself is the interface to \sh.
+  It returns instances of the \javaclass{PluginSettingsPanel}
+  and the \javainterface{CalcPluginResults},
+  has a setter method to get notified about existing properties and
+  has getter methods which provide basic information like the title,
+  description and unique identifier of the plugin.\\
+
+  Next to those classes there is a \javaclass{PluginArguments} class,
+  which is a simple \javaclass{Object} representing a plugin configuration
+  and a \javaclass{CalcPluginSettings} class implementing
+  the \javainterface{Serializable} interface which contains data,
+  that is saved into the database.
+  It could be used by the plugin to save and retrieve
+  settings like e.g. an arguments history.
+
+\subsection{Writing a simple plugin}
+In the next sections we will -- in a step-by-step guide --
+develop a plugin that reads an existing numerical property,
+adds or subtracts 1.0 from the property
+and saves the new value into a new property.
+The plugin is configurable and has the ability
+to send messages to the GUI if something goes wrong.
+
+\subsection{First version - Create a plugin that does nothing}
+The first plugin version can be found in
+\javapackage{edu.""udo.""scaffoldhunter.""plugins.""datacalculation.""impl.""example1}.
+It implements just the basic things, while having no real functionality.
+It can be selected and executed, but behaves transparently,
+thus doesn't calculate anything.
+
+  \subsubsection{Example1CalcPlugin.java}
+
+    \paragraph{@PluginImplementation}
+    The first important thing is the \javaannotation{@PluginImplementation}
+    annotation above the class definition.
+    This is needed by the plugin framework to recognize this class as a plugin.
+    If this line is missing, the plugin will not be listed in the calc dialog.
+
+    \paragraph{extends AbstractCalcPlugin}
+    Your calc plugin has to inherit from \javaclass{AbstractCalcPlugin}.
+    This abstract class implements the \javainterface{ImportPlugin} interface
+    for you and also overrides the \javamethod{toString()} method so that your plugin title
+    is shown correctly in the list of calc plugins in the calc dialog.
+
+    \paragraph{getTitle()}
+    The \javamethod{getTitle()} method returns a short name of the plugin.
+    This is also the name which is listed in the calc dialog.
+
+    \paragraph{getID()}
+    In \javamethod{getID()} your plugin should return a unique name of the plugin,
+    this is for example used by \sh to match saved properties for the plugins.
+    During the development process of \sh all plugins used
+    the form \verb+CLASSNAME_VERSION+ that should be unique enough.
+
+    \paragraph{getDescription()}
+    The \javamethod{getDescription()} method returns a description
+    about for what the calc plugin can be used,
+    like "This is a calc plugin which can be used to calculate the xyz-fingerprint".
+
+    \paragraph{setAvailableProperties(availableProperties)}
+    As we do not need to know something about existing properties yet,
+    we leave this method blanc.
+    This will change in the fourth version.
+
+    \paragraph{getSettingsPanel(settings,arguments)}
+    As we do not need any configuration yet,
+    we just return an empty instance of \javaclass{SettingsPanel}.
+    This will change in the third version.
+
+    \paragraph{getResults(arguments,molecules,msgListener)}
+    The given \javavar{molecules} parameter is
+    an \javaclass{Iterable} over the available molecules.
+    As we do not want to calculate any property nor modify any molecule,
+    we return a class implementing \javainterface{CalcPluginResults} interface,
+    which will return the \javavar{molecules} parameter unchanged.
+    It also returns an empty \javaclass{Set} of \javaclass{PropertyDefintition}s,
+    which declares we have no properties to be added to \sh.
+
+\subsection{Second version - 'Calculate' a new property}
+The second version of the plugin can be found in
+\javapackage{edu.""udo.""scaffoldhunter.""plugins.""datacal""culation.""impl.""example2}.
+Here, we change our last plugin version,
+so that it creates and saves a property for all given molecules.
+We don't really calculate something,
+we just create a numerical property with value 1.0.
+
+  \subsubsection{Example2CalcPlugin.java}
+    \paragraph{Example2CalcPlugin()}
+    In the constructor of \javaclass{Example2CalcPlugin},
+    we create a new \javaclass{Property""Definition}
+    and store it in a member variable named \javavar{propDef}.
+    \javavar{propDef} describes the characteristics of the property we want to add to every molecule.
+    Therefore we set the property type to be a numerical property.
+    See \tableref{Table:scaffoldhunter:calc:PropertyType} to learn which property types are available.
+    We also set a title, a description and a key.
+    The title is a short description of the property,
+    where as the description is a sentence describing the property in detail.
+    The property key is used for internal processing and written in uppercase letters by convention.
+    It should be as unique as possible.
+    Additionally, we set the property definition to be mappable
+    (this means it can be mapped on a visual feature in the main program)
+    and define it as molecule property (by saying it is not a scaffold property).
+
+    \begin{table}[!htb]
+      \begin{tabular}{cp{10cm}}
+	\textbf{PropertyType}	& \textbf{Description} \\ \toprule
+	\verb+NumProperty+		& An ordinary numerical property.\\ \midrule
+	\verb+StringProperty+	& An ordinary string property.\\ \midrule
+	\verb+BitStringFingerprint+	& A bit fingerprint represented by a string of 1 and 0 (chars).\\ \midrule
+	\verb+BitFingerprint+	& A bit fingerprint that interprets every bit of a string as a bit. This is logically identical to BitStringFingerprint but has less memory consumption.\\ \midrule
+	\verb+NumericalFingerprint+	& A fingerprint that consists of many numerical values. A NumericalFingerprint is a simple string with integer values separated by a comma: int,int,...\\ \bottomrule
+      \end{tabular}
+      \caption{Property Types}
+      \label{Table:scaffoldhunter:calc:PropertyType}
+    \end{table}
+
+    \paragraph{getResults(arguments,molecules,msgListener)} \label{sec:scaffoldhunter:calc:Example2CalcPlugin.java:getResults}
+    Here we change our custom \javaclass{CalcPluginResults} implementation:
+    In the \javamethod{getMolecules()} method we not simply return the \javaclass{Iterable} over the available molecules like in the last version.
+    Instead we transform all molecules with a custom transform function first, and return the transformed molecules.
+    The transform function will do all the work like calculating a property and adding it to the molecule.
+    Read \subsecref{sec:scaffoldhunter:calc:Example2CalcPluginTransformFunction.java} to see what is does in our example.\\
+    In the \javamethod{getCalculatedProperties()} method we return a \javaclass{Set} which contains the \javavar{propDef} we created before.
+    This notifies the plugin system we want to add this property.
+
+  \subsubsection{Example2CalcPluginTransformFunction.java} \label{sec:scaffoldhunter:calc:Example2CalcPluginTransformFunction.java}
+
+    \paragraph{implements Function$<$Molecule, Molecule$>$}
+    Our transform function needs to implement the \javainterface{Function} interface
+    and we want to transform from molecule to molecule.
+
+    \paragraph{Example2CalcPluginTransformFunction(propDef)}
+    In the constructor of the \javaclass{Example2""Calc""Plugin""Transform""Function} we simply save the given
+    \javaclass{PropertyDefinition} parameter in a member variable named \javavar{propDef}.
+    We will need this in the \javamethod{apply()} function.
+
+    \paragraph{apply(molecule)}
+    The \javamethod{apply()} functions gets one molecule as input parameter, and returns the transformed molecule.
+    We just insert a mapping from the \javavar{propDef} (our \javaclass{PropertyDefinition}) to the value $1.0$ to the molecules property map.
+    Then we return the molecule. The plugin system will read this map and save the property.
+
+\subsection{Third version - Make the plugin configurable}
+The third version of the plugin can be found in
+\javapackage{edu.""udo.""scaffoldhunter.""plugins.""datacalculation.""impl.""example3}.
+We now want to make the plugin configurable.
+The user should choose whether the 'calculated'/added property is set to $1.0$ or $-1.0$, by enabling or disabling a checkbox.
+Therefore we will extend \javaclass{PluginSettingsPanel} by a checkbox
+and introduce a \javaclass{CalcPluginArguments} class to store the state of the checkbox.
+  
+  \subsubsection{Example3CalcPluginArguments.java}
+  The \javaclass{Example3CalcPluginArguments} class just has a
+  \javatype{boolean} member variable encoding the state of the checkbox.
+  Additionally it has a getter and a setter method for this variable.
+
+  \subsubsection{Example3CalcPluginSettingsPanel.java}
+    \paragraph{Example3CalcPluginSettingsPanel(arguments)}
+    The \javaclass{Example3CalcPluginSettingsPanel}s constructor saves
+    a reference to the given \javavar{arguments} parameter.
+    It also creates a checkbox which is initialized to the state stored
+    in the \javavar{arguments} parameter and adds it to the panel.
+    Additionally it creates an \javainterface{ActionListener} which reacts on changes
+    of the checkbox state and updates the corresponding
+    \javatype{boolean} value in the \javavar{arguments}.
+
+    \paragraph{getArguments()}
+    The \javamethod{getArguments()} method simply returns the \javavar{arguments}.
+
+  \subsubsection{Example3CalcPluginTransformFunction.java}
+  The \javaclass{Example3CalcPluginTransformFunction} constructor is changed
+  so that it saves a reference to the new \javavar{arguments} parameter.
+
+    \paragraph{apply(molecule)}
+    The \javamethod{apply()} method now determines the property value based on the saved \javavar{arguments}.
+
+  \subsubsection{Example3CalcPlugin.java}
+      In the calc plugin itself there are just a few changes. The following methods changed:
+
+      \paragraph{getSettingsPanel(settings,arguments)}
+      The \javamethod{getSettingsPanel()} method creates
+      a new \javaclass{Example3""CalcPlugin""Arguments} instance,
+      if the \javavar{arguments} parameter is \javatype{null}.
+      You should always initialize your arguments in this way.
+      Afterwards a new \javaclass{Example3""CalcPlugin""SettingsPanel} is
+      instantiated with the \javaclass{Example3""CalcPlugin""Arguments} as parameter and returned.
+
+      \paragraph{getResults(arguments,molecules,msgListener)}
+      In the \javamethod{getResults()} method there is just one small change:
+      The \javavar{arguments} parameter is casted and passed
+      to the \javaclass{Example3""CalcPlugin""Transform""Function}s constructor.
+
+\subsection{Fourth version - Use existing properties for calculation}
+The fourth version of the plugin can be found in
+\javapackage{edu.""udo.""scaffoldhunter.""plugins.""datacalculation.""impl.""example4}.
+In this version we want to read existing numerical properties and let the user select one.
+For every molecule our plugin creates a new property which is the
+same as the selected one, but $1.0$ or $-1.0$ (based on the users choice) is added to the property value.
+
+  \subsubsection{Example4CalcPluginArguments.java}
+  A new variable which saves the property chosen by the user is added together
+  with corresponding getter and setter methods
+  to the \javaclass{PluginArguments} from the last version.
+
+  \subsubsection{Example4CalcPluginSettingsPanel.java}
+  The \javaclass{PluginSettingsPanel} from the last version is extended to show a
+  \javaclass{JList} with all numerical property definitions.
+  A list selection listener is used to update the \javaclass{Example4CalcPluginArguments}
+  with the property definition selected by the user.
+
+  \subsubsection{Example4CalcPluginTransformFunction.java}
+  The \javamethod{apply()} method was adjusted so that the value of
+  the chosen property is read from the input molecule,
+  $1.0$ or $-1.0$ is added and the resulting new property value
+  is appended to the property map of the output molecule.
+
+  \subsubsection{Example4CalcPlugin.java}
+  In comparison to the last version there are several small changes in \javaclass{Example4CalcPlugin}.
+  The constructor was deleted and the creation of the
+  property definition moved to the \javamethod{getResults()} method.
+
+  \paragraph{setAvailableProperties(availableProperties)}
+  In the \javamethod{setAvailableProperties()} method the
+  \javavar{available""Properties} are saved as a member variable.
+  Please note that the \javamethod{setAvailableProperties()} method is
+  the first method called by the plugin system after instantiation of the plugin.
+  For this reason the plugin is able to use this information when
+  creating a \javaclass{SettingsPanel} in the \javaclass{getSettingsPanel()} method.
+
+  \paragraph{getSettingsPanel(settings, arguments)}
+  The only change made in the \javamethod{getSettingsPanel()}
+  method is that the \javavar{availableProperties} are passed
+  to the constructor of the \javaclass{Example4""CalcPlugin""SettingsPanel}.
+
+  \paragraph{getResults(arguments,molecules,msgListener)}
+  The \javaclass{getResults()} method is now responsible for creation
+  of the \javaclass{PropertyDefinition} stored in \javavar{propDef}.
+  \javavar{propDef}s key, title and description attributes are set dynamically based on the
+  corresponding attributes of the chosen input property stored in the parameter \javavar{arguments}.
+
+\subsection{Fifth and last version - Display a message during calculation}
+The fifth and last version of the plugin can be found in
+\javapackage{edu.""udo.""scaffoldhunter.""plugins.""datacalculation.""impl.""example5}.
+Here we will enable the plugin to send messages to the GUI
+in case that the input property chosen by the user is not defined for a molecule.
+
+  \subsubsection{Example5CalcPlugin.java}
+  In comparison to the last plugin version, there is just one small change:
+  The \javamethod{getResults""(arguments,""molecules,""msgListener)} method
+  now passes the \javavar{msgListener} parameter to the constructor of
+  the \javaclass{Example5CalcPluginTransformFunction}.
+
+  \subsubsection{Example5CalcPluginTransformFunction.java}
+  All the message handling is done in the \javaclass{Example5CalcPluginTransformFunction}.
+  In its constructor we therefore read the new \javavar{msgListener}
+  parameter and save it as a member variable with the same name.
+  In the \javamethod{apply()} method we will
+  then use the \javavar{msgListener} member variable to send a message.\\
+  But first we need more details about the message system integrated into the calc plugin system.
+  Because the \javavar{msgListener} variable references an object implementing the \javainterface{MessageListener} interface,
+  we are able to send a \javaclass{Message} object by calling \verb+msgListener.receiveMessage(message)+.
+  Suited for the needs of calc plugins there is the \javaclass{CalcMessage} class which extends the \javaclass{Message} class.
+  \javaclass{CalcMessage} has two similar constructors allowing to create
+  a message with a desired \javaclass{MessageType}, a molecule title and (optionally) a property definition.
+  An object implementing the \javainterface{MessageType} interface defines a message string and a message icon.
+  For convenience there is an enum \javaclass{CalcMessageTypes} with some predefined \javaclass{MessageTypes}, which can be used for your message.
+  See \tableref{Table:scaffoldhunter:calc:CalcMessageTypes} to learn what types you can use.
+  Depending on the used \javainterface{MessageType} implementation some or all of the given attributes
+  of a message are presented to the user in a tree-like manner shown in \figref{fig:calculationprogress}.
+
+    \paragraph{apply(molecule)}
+    In the \javamethod{apply()} method an else clause (which sends the message) was inserted
+    after the if-block (which does the calculation).
+    So in case the chosen property is not defined for the given molecule,
+    a \javaclass{CalcMessage} is created and sent to the GUI.
+    Note that the molecule title needed to construct the message is read from the molecule properties map,
+    by asking for the key \verb+CDKConstants.TITLE+.
+
+  \subsubsection{Example5CalcPluginArguments.java}
+  This class remains completely unchanged.
+
+  \subsubsection{Example5CalcPluginSettingsPanel.java}
+  This class remains completely unchanged.
+
+    \begin{table}[!htb]
+      \begin{tabular}{cp{10cm}}
+	\textbf{Enum constant}		& \textbf{Message text} \\ \toprule
+	\verb+PROPERTY_NOT_PRESENT+	& $<$molecule title$>$: source property $<$property definition title$>$ needed for calculation was not present, thus no value calculated\\ \midrule
+	\verb+CALCULATION_ERROR+	& $<$molecule title$>$: an error occurred in the calculation plugin, thus no value calculated\\ \bottomrule
+      \end{tabular}
+      \caption{Calc Message Types}
+      \label{Table:scaffoldhunter:calc:CalcMessageTypes}
+    \end{table}
+
+\subsection{Use transform options to handle frequent tasks}
+
+If you write a calc plugin that takes the structural
+information (e.g. 2D graph structure) of a molecule into account,
+then you may want to give the user the opportunity to use transform options.
+Transform options are a kind of preprocessing on all molecules before the calc plugin operates on them.
+See \subsecref{subsec:scaffoldhunter:Transform Options} for more information.\\
+
+Using transform options is rather simple.
+First change your \javaclass{PluginArguments} class
+so that it inherits from \javaclass{AbstractCalcPluginArguments},
+which can be found in \javapackage{edu.""udo.""scaffoldhunter.""plugins.""datacalculation}.
+The second thing you have to do, is to integrate an instance of \javaclass{CalcPluginTransformOptionPanel}
+(can be found in \javapackage{edu.""udo.""scaffoldhunter.""plugins.""data""calculation})
+in your custom \javaclass{PluginSettingsPanel}.
+As the name suggests, you can add the \javaclass{CalcPluginTransformOptionPanel} like any other Swing container somewhere to your custom panel.
+When instantiating \javaclass{CalcPluginTransformOptionPanel},
+you need to pass your \javaclass{PluginArguments} instance to its constructor.
+After following the instructions above your plugin will show a panel with transform
+options and depending on the users choice the molecules are transformed automatically before they are processed by the plugin.

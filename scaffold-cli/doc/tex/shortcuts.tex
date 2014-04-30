@@ -1,0 +1,97 @@
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{ccl}
+					&	\textbf{Key}		& \textbf{Action} \\ \toprule
+\multirow{3}*{\textbf{Zoom}}		&	+/-			& Zoom in/out \\
+					&	0			& Fit graph / Table: Normalize rows\\
+					&	s			& Fit selection / Table: Scroll to first selected molecule\\ \midrule
+\multirow{6}*{\textbf{Selection}}	&	Ctrl+A			& Select all molecules/scaffolds\\
+					&	Ctrl+Shift+A		& Deselect all molecules/scaffolds\\
+					&	Ctrl+I			& Invert selection\\
+					&	Ctrl+D			& Deselect all molecules in the current views subset\\
+					&	Ctrl+N			& Make subset from selected molecules\\
+					&	Ctrl+Shift+N		& Make subset from selected molecules in current view\\ \midrule
+\multirow{5}*{\textbf{View}}		&	Ctrl+W			& Close current view\\
+					&	Ctrl+PageUp		& Show next view\\
+					&	Ctrl+PageDown		& Show previous view\\
+					&	ALT+$\leftarrow$	& Toggle display of \sbar\\
+					&	ALT+$\rightarrow$	& Toggle display of subset\\ \bottomrule
+  \end{tabular}
+  \caption{Global shortcuts (view-independent)}
+\end{table}
+
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{ccl}
+					&	\textbf{Mouse}					& \textbf{Action} \\ \toprule
+\multirow{4}*{\textbf{Selection}} 	&	Left-click on molecule/scaffold			& Toggle selection of molecule/scaffold\\
+					&	Shift + Left-click + Drag			& Select all molecules/scaffolds in selection rectangle\\
+					&	Ctrl + Left-click + Drag			& Deselect all molecules/scaffolds in selection rectangle\\
+					&	Left-click on tree node				& Toggle selection of subtree (\dview only)\\ \midrule
+\multirow{2}*{\textbf{Flags}}     	&	Middle-click on molecule/scaffold		& Add/remove public flag for molecule/scaffold\\
+					&	Shift + Middle-click on molecule/scaffold	& Add/remove private flag for molecule/scaffold\\ \midrule
+\multirow{2}*{\textbf{Zoom}}		&	WheelUp / WheelDown				& Zoom in/out\\
+					&	Ctrl + WheelUp / WheelDown			& Zoom in/out vertically (\dview only)\\ \midrule
+\multirow{3}*{\textbf{Navigation}}	&	Left-click + Drag				& Move view area (\tview only)\\ 
+					&	Right-click + Drag				& Rotate 3D-graph (\pview only)\\
+					&	Right-click on molecule/scaffold		& Open context menu (all views; except \pview)\\ \bottomrule
+  \end{tabular}
+  \caption{Mouse actions (global and view-specific)}
+\end{table}
+
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{ccl}
+					&	\textbf{Key}		& \textbf{Action} \\ \toprule
+\multirow{5}*{\textbf{Navigation}}	&	$\rightarrow$		& Move cursor clockwise \\
+					&	$\leftarrow$		& Move cursor counter-clockwise \\
+					&	$\uparrow$		& Move cursor to first child \\
+					&	$\downarrow$		& Move cursor to parent \\
+					&	C			& Focus cursor \\ \midrule
+\multirow{3}*{\textbf{Radii}}		& 	Ctrl+$\uparrow$		& Increase radii \\
+					&	Ctrl+$\downarrow$	& Decrease radii \\
+					&	F			& Toggle radii lock \\ \midrule
+\multirow{5}*{\textbf{Expanding}}	&	Enter			& Open/close children \\
+					&	Ctrl+Enter		& Open/close entire subtree \\
+					&	E			& Expand next level/Reduce to level \\
+					&	Ctrl+E			& Expand all nodes \\
+					&	Ctrl+Shift+E		& Reset to default expand level\\ \midrule
+\multirow{4}*{\textbf{Visual}}		&	Space			& Select/deselect scaffold\\
+					&	M	(pressed)	& Show molecules\\
+					&	Ctrl+M			& Toggle permanent display of molecules\\
+					&	Ctrl+P			& Configure property mappings...\\ \midrule
+\multirow{7}*{\textbf{Node scaling}}	&	PageUp			& Scale up cursor scaffold \\
+					&	PageDown		& Scale down cursor scaffold \\
+					&	Alt+PageUp		& Scale up selected scaffolds \\
+					&	Alt+PageDown		& Scale down selected scaffolds \\
+					&	N			& Normalize cursor scaffold \\
+					&	Alt+N			& Normalize selected scaffolds\\
+					&	A			& Normalize all nodes\\ \hline
+%		      T    ??? does not exist any longer                      & Toggle tooltip \\
+\multirow{3}*{\textbf{Layout}}		&	L			& Switch to linear layout\\
+					&	B			& Switch to balloon layout\\
+					&	R			& Switch to radial layout\\ \bottomrule
+  \end{tabular}
+  \caption{\Stview shortcuts}
+\end{table}
+
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{cl}
+    \textbf{Key}	& \textbf{Action} \\ \toprule
+    Ctrl+G		& Toggle display of grid \\
+    Ctrl+T		& Toggle display of ticks \\ \bottomrule
+  \end{tabular}
+  \caption{\Pview shortcuts}
+\end{table}
+
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{cl}
+    \textbf{Key}	& \textbf{Action} \\ \toprule
+    Ctrl+T		& Toggle display of table \\
+    Ctrl + Plus		& Zoom in vertically \\
+    Ctrl + Minus	& Zoom out horizontally\\ \bottomrule
+  \end{tabular}
+  \caption{\Dview shortcuts}
+\end{table}

@@ -1,0 +1,214 @@
+%\documentclass[a4paper,10pt,english,twoside,bibtotoc,liststotoc]{scrbook}
+\documentclass[a4paper,10pt,english,twoside,bibliography=totoc,listof=totoc]{scrbook}
+%\usepackage{csquotes}
+%\usepackage[citestyle=authoryear-comp,bibstyle=authoryear,dashed=false,cite=footnote,minnames=3,maxnames=3]{biblatex}
+\usepackage[utf8]{inputenc}
+\usepackage[english,ngerman]{babel} %ngerman needed for breaking long package names with custom hyphenation patterns
+\usepackage{graphicx}
+\usepackage{subfig}
+%\usepackage{a4wide}
+\usepackage{fullpage}
+
+\usepackage{appendix}
+
+\usepackage{longtable}
+\usepackage{xcolor}
+\usepackage{upquote}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\setlength{\headheight}{12pt}
+\setlength{\headsep}{25pt}
+
+\usepackage{multirow} % tables with row and col span
+\usepackage{booktabs} % nicer table lines
+
+\usepackage{xspace} % enables use of \xspace which sets a space if needed. used for macros
+
+\usepackage[parfill]{parskip}   % use newline instead of indent before paragraphs
+
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, breaklinks=true, linkcolor=blue, menucolor=blue, urlcolor=blue, citecolor=blue}
+
+
+\newcommand{\gui}[1]{``#1''} % point out gui elements
+\newcommand{\guidialog}[1]{\textsf{#1}} % point out gui dialogs
+\newcommand{\software}[1]{\texttt{#1}} % point out software
+
+\newcommand{\sh}{Scaffold Hunter\xspace} % unique writing of Scaffold Hunter
+\newcommand{\shs}{Scaffold Hunters\xspace} % unique writing of Scaffold Hunter
+\newcommand{\mysql}{\software{MySQL}\xspace} % unique writing of MySQL
+\newcommand{\hsqldb}{\software{HSQLDB}\xspace} % unique writing of HSQLDB
+\newcommand{\stree}{scaffold tree\xspace} % unique writing of Scaffold Tree
+\newcommand{\stview}{scaffold tree view\xspace} % unique writing of ScaffoldTreeView
+\newcommand{\stviews}{scaffold tree views\xspace} % unique writing of ScaffoldTreeView
+\newcommand{\dview}{dendrogram view\xspace} % unique writing of DendrogramView
+\newcommand{\pview}{plot view\xspace} % unique writing of PlotView
+\newcommand{\tview}{table view\xspace} % unique writing of TableView
+\newcommand{\tmview}{treemap view\xspace} % unique writing of TreeMapView
+\newcommand{\Stview}{Scaffold tree view\xspace} % unique writing of ScaffoldTreeView
+\newcommand{\Dview}{Dendrogram view\xspace} % unique writing of DendrogramView
+\newcommand{\Pview}{Plot view\xspace} % unique writing of PlotView
+\newcommand{\Tview}{Table view\xspace} % unique writing of TableView
+\newcommand{\Tmview}{TreeMap view\xspace} % unique writing of TreeMapView
+\newcommand{\tbar}{tool bar\xspace} %unique writing of tool bar
+\newcommand{\sbar}{side bar\xspace} %unique writing of side bar
+
+\newcommand{\appref}[1]{\hyperref[#1]{\textit{App. \ref{#1}: \nameref{#1}}}}
+\newcommand{\chapref}[1]{\hyperref[#1]{\textit{Chap. \ref{#1}: \nameref{#1}}}}
+\newcommand{\secref}[1]{\hyperref[#1]{\textit{Sec. \ref{#1}: \nameref{#1}}}}
+\newcommand{\subsecref}[1]{\hyperref[#1]{\textit{Sec. \ref{#1}: \nameref{#1}}}}
+\newcommand{\subsubsecref}[1]{\hyperref[#1]{\textit{Sec. \ref{#1}: \nameref{#1}}}}
+\newcommand{\parref}[1]{\hyperref[#1]{\textit{Par. \ref{#1}: \nameref{#1}}}}
+%KK is now basically the same as shortfigref, but olf figref version is unwanted
+%and this change avoids changing all other files
+%\newcommand{\figref}[1]{\hyperref[#1]{\textit{Fig. \ref{#1}}}} %: \nameref{#1}}}}
+\newcommand{\figref}[1]{\hyperref[#1]{Fig. \ref{#1}}}
+\newcommand{\shortfigref}[1]{\hyperref[#1]{\textit{Fig. \ref{#1}}}}
+%KK see comment above
+%\newcommand{\tableref}[1]{\hyperref[#1]{\textit{Table \ref{#1}: \nameref{#1}}}}
+\newcommand{\tableref}[1]{\hyperref[#1]{Table \ref{#1}}} %: \nameref{#1}}}}
+
+% select english is used to enable custom hyphenation macros which exist only in ngerman or german
+\newcommand{\javapackage}[1]{\selectlanguage{ngerman}\texttt{#1}\selectlanguage{english}}
+\newcommand{\javaannotation}[1]{\selectlanguage{ngerman}\texttt{#1}\selectlanguage{english}}
+\newcommand{\javaclass}[1]{\selectlanguage{ngerman}\texttt{#1}\selectlanguage{english}}
+\newcommand{\javainterface}[1]{\selectlanguage{ngerman}\texttt{#1}\selectlanguage{english}}
+\newcommand{\javamethod}[1]{\selectlanguage{ngerman}\texttt{#1}\selectlanguage{english}}
+\newcommand{\javavar}[1]{\selectlanguage{ngerman}\texttt{#1}\selectlanguage{english}}
+\newcommand{\javatype}[1]{\selectlanguage{ngerman}\texttt{#1}\selectlanguage{english}}
+
+\definecolor{lightred}{rgb}{1.0,0.8,0.8}
+\definecolor{lightyellow}{rgb}{1.0,1.0,0.8}
+\newcommand{\hintbox}[2]{\vspace{6pt}\begin{center}\fcolorbox{black}{lightyellow}{\begin{minipage}[t]{120mm}\textsc{#1}: #2\end{minipage}}\end{center}} % create a hintbox
+\newcommand{\warningbox}[2]{\vspace{6pt}\begin{center}\fcolorbox{black}{lightred}{\begin{minipage}[t]{120mm}\textsc{#1}: #2\end{minipage}}\end{center}} % create a warningbox
+
+\setcounter{secnumdepth}{3}
+
+
+% biblatex
+%\bibliography{literature}
+
+%KK removed at least temporarily 
+%\renewcommand*{\finalnamedelim}{\addsemicolon\space} % biblatex: separates multiple authors by semicolon instead of and
+%\renewcommand*{\multinamedelim}{\finalnamedelim} % biblatex: separates multiple authors by semicolon instead of and
+%\DeclareNameAlias{sortname}{last-first} % switch to lastname, firstname for all author names
+
+%\setlength{\bibitemsep}{12pt}% space between bibtex entries
+% end biblatex
+
+
+\title{\includegraphics*[scale=2]{images/sh_logo}{\small Version 2.3}\\\vspace{5mm}User Manual}
+
+\begin{document}
+\selectlanguage{english} % needed because ngerman and english are both used for babel package
+
+\pdfbookmark[0]{Titlepage}{title} % Sets a PDF bookmark for the title page
+\maketitle
+\setcounter{page}{0}\clearpage %title starts with page number 0
+\pagenumbering{roman}
+\pdfbookmark[0]{Contents}{contents} % Sets a PDF bookmark for the contents page
+\tableofcontents
+%\listoffigures
+%\listoftables
+
+
+\chapter{Introduction}
+\pagenumbering{arabic}
+  \input{tex/introduction/introduction}
+
+\chapter{Requirements} \label{sec:scaffoldhunter:requirements}
+	\section{System Requirements}
+		\input{tex/requirements/system_requirements}
+	\section{Database}
+		\input{tex/requirements/database}
+	\section{Java Virtual Machine} \label{sec:scaffoldhunter:requirements:jvm}
+		\input{tex/requirements/java_vm}
+
+
+\chapter{Installation}
+	\input{tex/installation/installation.tex}
+
+	\section{Starting \sh}
+		\input{tex/installation/starting.tex}
+
+
+\chapter{Start Dialog}
+	\input{tex/startdialog/startdialog}
+    \section{Setting up a Database Connection} \label{sec:scaffoldhunter:databaseconnection}
+    	\input{tex/startdialog/databaseconnections}
+    \section{User Management}
+    	\input{tex/startdialog/usermanagement}
+
+\chapter{Getting Started}
+  \section{Session Management}
+  	\label{sec:scaffoldhunter:SessionManagement}
+  	\input{tex/getting_started/sessionmanagement}
+  \section{Dataset Management} \label{sec:scaffoldhunter:datasetmanagement}
+    \input{tex/getting_started/datasetmanagement}
+    \subsection{Importing Data} \label{sec:scaffoldhunter:import}
+      \input{tex/getting_started/importing_data}
+    \subsection{Calculation of Properties} \label{sec:scaffoldhunter:propertycalculation}
+      \input{tex/getting_started/propertycalculation}
+    \subsection{Scaffold Tree Generation} \label{sec:scaffoldhunter:treegeneration}
+      \input{tex/getting_started/scaffoldtreegeneration}
+  \section{Filtering} \label{sec:scaffoldhunter:filtering}
+  	\input{tex/getting_started/filtering}
+  \section{Initial Views} \label{sec:scaffoldhunter:initial_views}
+  	\input{tex/getting_started/initial_views}
+
+
+\chapter{Main Window}
+    \input{tex/main_program/main_window}
+  \section{Subset Management} \label{sec:scaffoldhunter:subsetmanagement}
+    \input{tex/main_program/subset_management}
+  \section{Managing and Arranging Views} \label{sec:scaffoldhunter:viewmanagement}
+    \input{tex/main_program/view_management}
+  \section{Interaction between Views}
+  	\input{tex/main_program/linking_between_views}
+  \section{Tooltip Window and Comments}
+    \input{tex/main_program/tooltip_window_and_comments}
+  \section{Settings}
+    \input{tex/main_program/settings}
+
+\chapter{Views} \label{sec:scaffoldhunter:views}
+	\input{tex/views/introduction}
+  \section{Scaffold Tree}
+    \input{tex/views/stree}
+  \section{Table} \label{sec:scaffoldhunter:table}
+    \input{tex/views/table}
+  \section{Dendrogram}\label{sec:views:dendogram}
+    \input{tex/views/dendrogram}
+  \section{Plot}
+    \input{tex/views/plot}
+  \section{Tree Map}
+    \input{tex/views/treemap}
+
+\chapter{Export}
+	\input{tex/main_program/export}
+
+\bibliographystyle{plain}
+\bibliography{literature}
+
+\begin{appendix}
+
+\chapter{Keyboard Shortcuts} \label{chap:scaffoldhunter:shortcuts}
+  \input{tex/shortcuts}
+
+\chapter{How to Write Plugins} \label{chap:scaffoldhunter:writeplugins}
+In this chapter you will learn the basic parts needed to write new plugins.
+Feel free to write new import or calc plugins or to expand the existing ones.
+We are always happy to get new plugin (versions) submitted.
+
+    \section{Import Plugins}
+      \input{tex/howto_write_plugins/import}
+    
+    \section{Calculation Plugins}
+      \input{tex/howto_write_plugins/calculation}
+
+\chapter{FAQ - Frequently Asked Questions}
+    \input{tex/faq}
+
+\end{appendix}
+
+\end{document}

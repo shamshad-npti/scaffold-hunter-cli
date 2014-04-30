@@ -1,0 +1,51 @@
+An SQL database is required to store the imported datasets and the user's sessions.
+The currently supported databases systems are:
+\begin{description}
+	\item[MySQL]  \hfill \\ Version 5.0 or later is required. A copy of \mysql can be obtained at \mbox{\url{http://www.mysql.com}}; see~\secref{sec:scaffoldhunter:requirements:database} for configuration instructions.
+	\item[HSQLDB] \hfill \\ Version 2.2.4 of \hsqldb is included and can be used for small personal databases. Additional space on the hard drive is required if this type of database is used. Please note that using \hsqldb leads to an increased memory requirement compared to \mysql.
+\end{description}
+
+\subsection{Setting Up a \mysql Database}\label{sec:scaffoldhunter:requirements:database}
+In this section a basic setup of a \mysql database and user account is described that is sufficient for use with \sh. We assume that the server software is already installed and running. Please refer to \url{http://www.mysql.com} for detailed installation instructions concerning \mysql depending on your operation system.
+
+\subsubsection{Use UTF-8 character enconding}
+\mysql uses the latin1 character encoding by default. It is important to configure the \mysql server, that it uses UTF-8 character encoding. Otherwise, importing properties from files which contain non-latin characters will lead to errors. For \mysql 5.x you can simply use one of the following two options. Please refer to the \mysql manual at \url{http://www.mysql.com} if you are using another version and check if the provided information is still valid.
+
+\paragraph{Option 1} Starting \mysql using a command line interface.
+\begin{verbatim}
+  mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
+\end{verbatim}
+
+\paragraph{Option 2} Using the \mysql service: Edit the \mysql Server configuration file (\url{https://dev.mysql.com/doc/refman/5.7/en/option-files.html}) and add the following lines.
+\begin{verbatim}
+[client]
+default-character-set=utf8
+
+[mysql]
+default-character-set=utf8
+
+[mysqld]
+collation-server = utf8_unicode_ci
+init-connect='SET NAMES utf8'
+character-set-server = utf8
+\end{verbatim}
+
+
+\subsubsection{Creating a Database and a User Account}
+During the installation process of \mysql typically a root user account is created. We recommend not to use this account with \sh and to create a dedicated user account with restricted right of access. To create both, a database and a new user account, you may connect to the \mysql server with your root account using the command \texttt{mysql}. The following SQL statements can be used to create a database \texttt{scaffoldhunter} and a user \texttt{scaffoldhunter} that is allowed to access only the newly created database from localhost and has to identify with the specified password.
+\begin{verbatim}
+CREATE DATABASE scaffoldhunter default character set = "UTF8" default collate = "utf8_general_ci";
+CREATE USER 'scaffoldhunter'@'localhost' IDENTIFIED BY 'password';
+GRANT ALL ON scaffoldhunter.* TO 'scaffoldhunter'@'localhost';
+\end{verbatim}
+In case you prefer to install the \mysql server on a separate machine, \texttt{localhost} should be replaced by \texttt{\%}. Please note that in this case additional system specific configuration may be required, e.g., adjustment of firewall settings.
+
+
+\subsubsection{Allow Large Packages}
+\label{sec:mysql_max_package_size}
+\mysql typically defaults to a $1$ MiB maximum package size which can lead to errors during saving a session. We therefore recommend to increase the max package size to $32$ MiB. This can be done by adding the line \texttt{max\_allowed\_packet = 32M} under the \texttt{[mysqld]} section to the \mysql server configuration file (\url{https://dev.mysql.com/doc/refman/5.7/en/option-files.html}).
+
+\begin{verbatim}
+[mysqld]
+max_allowed_packet = 32M
+\end{verbatim}

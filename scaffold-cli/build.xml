@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ScaffoldHunter" default="dist-zip">
+    <description>
+    	Scaffold Hunter is a JAVA-based software tool for the analysis of structure-related biochemical data.
+    	
+    	This build file has been tested with ant 1.8.2. It uses some tasks which are unavailable in versions prior to 1.8.
+    </description>
+	
+	<!-- check ant version -->
+	<fail message="This build script requires ant version 1.8 or later">
+		<condition>
+			<not>
+				<antversion atleast="1.8"/>
+			</not>
+		</condition>
+	</fail>
+	
+	<!-- get svn revision -->
+	<exec executable="svnversion"
+		outputproperty="svn.version" 
+	    failifexecutionfails="false" 
+		resultproperty="svnversion.error-code"
+	/>
+	<echo>SVN version number: ${svn.version}</echo>
+	
+	<!-- property file to change properties used in the build process -->
+	<property file="build.properties"/>
+	
+	<!-- build properties -->
+	<property name="src.dir" location="src"/>
+	<property name="resource.dir" location="resources"/>
+	<property name="test.src.dir" location="test"/>
+	<property name="lib.dir.name" value="lib"/>
+	<property name="lib.dir" location="${lib.dir.name}"/>
+	<property name="script.dir" location="scripts"/>
+	
+	<property name="build.dir" location="build"/>
+	<property name="build.classes.dir" location="${build.dir}/classes"/>
+	<property name="build.javadoc.dir" location="${build.dir}/javadoc"/>
+	<property name="dist.dir" location="dist"/>
+	<property name="dist.lib.dir" location="${dist.dir}/${lib.dir.name}"/>
+	<property name="dist.plugin.dir.name" value="plugins"/>
+	<property name="dist.plugin.dir" location="${dist.dir}/${dist.plugin.dir.name}"/>
+	<property name="release.dir" location="release"/>
+	<property name="doc.dir.name" value="doc" />
+	<property name="doc.dir" location="${doc.dir.name}" />
+	<property name="build.doc.dir" location="${build.dir}/${doc.dir.name}" />
+	<property name="manual.name" value="manual" />
+		
+	<property name="main.class" value="edu.udo.scaffoldhunter.ScaffoldHunter"/>
+	<property name="sh.dir" value="edu/udo/scaffoldhunter"/>
+	<property name="sh.resources.dir" value="${sh.dir}/resources"/>
+	<property name="run.properties.file" location="${build.classes.dir}/${sh.resources.dir}/run.properties"/>
+	
+	<property name="project.name" value="scaffold-hunter"/>
+	<!-- comment out the following line for release versions -->
+	<property name="project.version" value="r${svn.version}"/>
+	<property name="project.version" value="2.3.1"/>
+	<property name="project.name-version" value="${project.name}-${project.version}"/>
+	
+	<property name="dist.small-jar.filename" value="${project.name-version}.jar"/>
+	<property name="dist.small-jar" location="${dist.dir}/${dist.small-jar.filename}"/>
+	<property name="dist.zip" location="${dist.dir}/${project.name-version}.zip"/>
+	<property name="dist.src" location="${dist.dir}/${project.name}-src-${project.version}.tar.gz"/>
+	<property name="dist.fat-jar" location="${dist.dir}/${project.name}-fat-${project.version}.jar"/>
+
+	<path id="build.classpath">
+		<fileset id="build.libs" dir="${lib.dir}">
+			<include name="**/*.jar"/>
+		</fileset>
+	</path>
+	
+
+	
+	<!-- ================================= 
+          target: init                      
+         ================================= -->
+    <target name="init">
+		<mkdir dir="${build.dir}"/>
+    	<mkdir dir="${build.classes.dir}"/>
+    	<mkdir dir="${build.doc.dir}"/>
+    	<mkdir dir="${dist.dir}"/>
+    	<mkdir dir="${dist.lib.dir}"/>
+    	<mkdir dir="${dist.plugin.dir}"/>
+    	<mkdir dir="${release.dir}"/>
+    </target>
+	
+	<!-- ================================= 
+          target: clean              
+         ================================= -->
+    <target name="clean" description="removes all files produced by the build process">
+		<delete dir="${build.dir}"/>
+        <delete dir="${build.classes.dir}"/>
+		<delete dir="${dist.dir}"/>
+    	<delete dir="${release.dir}"/>
+    </target>
+	
+	<!-- ================================= 
+          target: compile              
+         ================================= -->
+    <target name="compile" depends="init" description="compile Scaffold Hunter including plugins (some are excluded for release) located in the source tree">
+    	<!-- compile everything in the source dir and place class files in build.classes.dir -->
+    	<javac srcdir="${src.dir}"
+    	 includeantruntime="no"
+         destdir="${build.classes.dir}"
+    	 encoding="UTF-8"
+    	 debug="on"
+    	 source="1.6"
+	 target="1.6">
+    		<classpath refid="build.classpath"/>
+    	</javac>
+    	
+    	<!-- copy resources and hibernate config files over to build.classes.dir -->
+
+    	<copy todir="${build.classes.dir}">
+    		<fileset dir="${src.dir}">
+    			<include name="hibernate.cfg.xml"/>
+    			<include name="**/*.hbm.xml"/>
+    		</fileset>
+    		<fileset dir="${resource.dir}">
+    			<include name="${sh.resources.dir}/i18n/"/>
+    			<include name="${sh.resources.dir}/icons/"/>
+    			<include name="${sh.resources.dir}/images/"/>
+    		</fileset>
+    	</copy>
+    	<propertyfile file="${run.properties.file}">
+    		<entry key="buildTime" value="now" type="date"/>
+    		<entry key="version" value="${project.version}"/>
+    	</propertyfile>
+    	
+    	<dirset dir="${build.classes.dir}" id="plugin.dirs">
+    		<include name="**/plugins/*/impl/*"/>
+    		<exclude name="**/dummy/" />
+    		<exclude name="**/example*/" />
+    		<exclude name="**/randomNumProperty/" />
+    		<exclude name="**/subsearchfingerprint/" />
+    		<exclude name="**/estatebitstringfingerprint/" />
+    		<exclude name="**/daylightbitstringfingerprint/" />
+    	</dirset>
+    </target>
+	
+	<!-- ================================= 
+          target: build-doc                      
+         ================================= -->
+    <target name="build-doc" depends="init">
+    	<copy todir="${build.doc.dir}">
+    		<fileset dir="${doc.dir}" />
+    	</copy>
+    	<exec failonerror="true" dir="build/doc" executable="pdflatex" >
+    		<arg value="${manual.name}" />
+    	</exec>
+    	<exec failonerror="true" dir="${build.dir}/doc" executable="bibtex" >
+    		<arg value="${manual.name}" />
+    	</exec>
+    	<exec failonerror="true" dir="${build.dir}/doc" executable="pdflatex" >
+    		<arg value="${manual.name}" />
+    	</exec>
+    	<exec failonerror="true" dir="${build.dir}/doc" executable="pdflatex" >
+    		<arg value="${manual.name}" />
+    	</exec>	    	
+    </target>
+
+
+	<!-- ================================= 
+          target: dist-small-jar              
+         ================================= -->
+    <target name="dist-small-jar" depends="compile" description="create a small jar, not including any dependencies or plugins">
+		<!-- Copy dependencies to dist dir -->
+    	<copy todir="${dist.lib.dir}">
+    		<fileset refid="build.libs"/>
+    	</copy>
+    	
+    	<!-- add plugin path to the run.properties file -->
+    	<propertyfile file="${run.properties.file}">
+			<entry key="PluginPath" value="${dist.plugin.dir.name}/"/>    
+    	</propertyfile>
+
+    	
+    	<!-- build a manifest classpath pointing to the dependencies -->
+    	<manifestclasspath jarfile="${dist.small-jar}" property="small-jar.classpath">
+    		<classpath>
+    			<fileset dir="${dist.lib.dir}"/>
+    		</classpath>
+    	</manifestclasspath>
+    	
+    	<!-- build a jar containing Scaffold Hunter and a Manifest -->
+    	<jar destfile="${dist.small-jar}" duplicate="preserve">
+    		<manifest>
+    			<attribute name="Main-Class" value="${main.class}"/>
+    			<attribute name="Class-Path" value="${small-jar.classpath}"/>
+    		</manifest>
+        	<fileset dir="${build.classes.dir}">
+        		<exclude name="**/plugins/*/impl/"/>
+        	</fileset>
+        </jar>
+    </target>
+	
+	<!-- ================================= 
+          target: dist-plugins
+          
+          runs the dist-plugin target in every plugin directory.
+          A plugin directory is a directory with the parent plugin/impl.
+         ================================= -->
+    <target name="dist-plugins" depends="compile" description="create one jar for every plugin in the source tree">
+    	<!-- runs ant in each plugin classes directory with the dist-plugin target-->
+        <subant genericantfile="${ant.file}" target="dist-plugin" inheritall="true">
+        	<dirset refid="plugin.dirs"/>
+        </subant>
+    </target>
+	
+	<!-- ================================= 
+          target: dist-plugin  
+          
+          this task is only meant to be run from dist-plugins                    
+         ================================= -->
+    <target name="dist-plugin">
+    	<basename file="${basedir}" property="plugin.name"/>
+    	<property name="plugin.path.relative" basedir="${build.classes.dir}" relative="true" location="${basedir}"/>
+    	<jar destfile="${dist.plugin.dir}/${plugin.name}.jar" duplicate="preserve">
+    		<fileset dir="${build.classes.dir}">
+    			<include name="${plugin.path.relative}/"/>
+    		</fileset>
+    	</jar>
+    </target>
+
+	<!-- ================================= 
+          target: dist-fat-jar              
+         ================================= -->
+    <target name="dist-fat-jar" depends="compile" description="build one jar containing all dependencies and all plugins in the source tree">
+    	<!-- convert paths to plugin class files (**/plugins/*/impl/*/*Plugin.class)
+    	 to space delimited list of plugin classes prefixed with their package 
+    	 this is used to load plugins from the class path --> 
+    	<pathconvert property="plugin.classes" pathsep=" ">
+    		<chainedmapper>
+    			<mapper type="package" from="*.class" to="*" />
+    			<mapper type="regexp" from=".*(edu\.udo\.scaffoldhunter\..*)" to="\1" />
+    		</chainedmapper>
+    		<fileset dir="${build.classes.dir}" includes="**/plugins/*/impl/*/*Plugin.class">
+    			<exclude name="**/Example*" />
+    			<exclude name="**/Dummy*" />
+    			<exclude name="**/RandomNumPropertyCalcPlugin*" />
+    			<exclude name="**/EStateBitStringCalcPlugin*" />
+    			<exclude name="**/DaylightBitStringCalcPlugin*" />
+    			<exclude name="**/SubSearchFingerprintCalcPlugin*" />
+    		</fileset>
+    	</pathconvert>
+    	
+    	<!-- remove the PluginPath property, since only plugins on the classpath are used with the fat jar -->
+    	<propertyfile file="${run.properties.file}">
+			<entry key="PluginPath" operation="del"/>
+    		<entry key="PluginClasses" value="${plugin.classes}"/>
+    	</propertyfile>
+    	<!-- build one jar containing the content of all library jars and the scaffold hunter classfiles -->
+        <jar destfile="${dist.fat-jar}" duplicate="add">
+        	<manifest>
+        		<attribute name="Main-Class" value="${main.class}"/>
+        	</manifest>
+        	<zipgroupfileset refid="build.libs"/>
+        	<fileset dir="${build.classes.dir}"/>
+        </jar>
+    </target>
+	
+	<!-- ================================= 
+	      target: dist-scripts              
+	     ================================= -->
+    <target name="dist-scripts" description="Replace tokens in script templates to prepare them for distribution.">
+    	<!-- copy script templates to dist dir replace template tokens and strip .template from their filenames -->
+        <copy todir="${dist.dir}">
+        	<fileset dir="${script.dir}"/>
+        	<mapper type="glob" from="*.template" to="*"/>
+        	<filterset>
+        		<filter token="VERSION" value="${project.version}"/>
+        		<filter token="SH_JAR_FILE" value="${dist.small-jar.filename}"/>
+        	</filterset>
+    	</copy>   	    
+    </target>
+	
+	<!-- ================================= 
+          target: dist-zip              
+         ================================= -->
+    <target name="dist-zip" depends="clean,build-doc,dist-small-jar,dist-plugins,dist-scripts"
+    	description="build a zip file containing the Scaffold Hunter jar, the startscripts, plugins and all dependencies">
+    	
+    	<zip destfile="${dist.zip}" >
+        	<zipfileset prefix="${project.name-version}" dir="${dist.dir}">
+        		<include name="${dist.small-jar.filename}"/>
+        		<include name="${lib.dir.name}/"/>
+        		<include name="${dist.plugin.dir.name}/"/>
+        		<include name="*.cmd"/>
+        	</zipfileset>
+    		<zipfileset prefix="${project.name-version}" dir="${dist.dir}" filemode="755">
+        		<include name="*.sh"/>
+    		</zipfileset>
+    		<zipfileset prefix="${project.name-version}" dir="${build.doc.dir}" >
+				<include name="${manual.name}.pdf" />
+    		</zipfileset>
+    		<zipfileset dir="./" includes="logging.properties.default" 
+    			fullpath="${project.name-version}/logging.properties"
+    		/>
+        </zip>
+    </target>
+	
+	<!-- ================================= 
+          target: dist-src              
+         ================================= -->
+    <target name="dist-src" 
+    	description="builds source distribution">
+    	
+    	<tar destfile="${dist.src}" compression="gzip" longfile="gnu">
+    		<tarfileset prefix="release-${project.version}" dir=".">
+    			<exclude name="build/**"/>
+    			<exclude name="dist/**"/>
+    			<exclude name="bin/**"/>
+    			<exclude name="release/**"/>
+    			<exclude name="external_sources/**"/>
+    			<exclude name="javadocs/**"/>
+    			<exclude name="testdb/**"/>
+    			<exclude name="logging.properties"/>
+    			<exclude name=".*/**"/>
+    		</tarfileset>
+    	</tar>
+    </target>
+	
+	<!-- ================================= 
+          target: release              
+         ================================= -->
+    <target name="release" depends="dist-zip,dist-src"
+    	description="builds all files required for release">
+        <copy todir="${release.dir}">
+        	<fileset file="${dist.src}"/>
+        	<fileset file="${dist.zip}"/>
+        	<fileset file="readme.txt"/>
+        	<fileset file="changelog.txt"/>
+        	<fileset file="scaffoldhunter.ebuild"/>
+    	</copy>
+    	<move file="${release.dir}/scaffoldhunter.ebuild" 
+    		tofile="${release.dir}/scaffoldhunter-${project.version}.ebuild"/>
+    </target>
+
+	
+	<!-- ================================= 
+          target: javadoc              
+         ================================= -->
+    <target name="javadoc" depends="init"
+    	description="generates Javadoc pages">
+    	
+    	<mkdir dir="${build.javadoc.dir}"/>
+    	<javadoc 
+    		sourcepath="${src.dir}" 
+    		destdir="${build.javadoc.dir}" 
+    		classpathref="build.classpath" 
+    		encoding="UTF-8" 
+    		charset="UTF-8" 
+    		docencoding="UTF-8"
+    	/>
+    </target>
+
+</project>

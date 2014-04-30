@@ -1,0 +1,58 @@
+A newly created \sh session will contain four views, one of each type (scaffold tree, dendrogram, plot and table), with each view showing the root subset.
+This setup is meant to serve only as a starting point.
+The number of simultaneous views is only limited by the system's available memory, and each view can be associated with a different subset and different settings.
+
+
+\subsection{Opening and Closing Views}
+
+There are several ways of creating a new view.
+The \gui{Window $\rightarrow$ Add View} submenu can be used to create a new view of a given type, showing the root subset.
+A more flexible way of opening new views is using either the \gui{Subset} menu or the subset tree's context menu:
+
+\begin{description}
+    \item[Show in Current View] (only in subset tree context menu) \hfill \\
+    Replaces the subset shown in the currently active view, while otherwise retaining the view's settings.
+    \item[Show in New View] \hfill \\
+    Creates a new tab in the current window, showing the selected subset in the chosen type of view.
+    \item[Show in New Window] \hfill \\
+    Creates a new window and adds a new tab to it, showing the selected subset in the chosen type of view.
+\end{description}
+
+\noindent Note that the \gui{Subset} menu always refers to the current view's subset, while the context menu refers to the subset being clicked on.
+
+Usually the fastest way to close a view is by using the 'X' button in the view's tab, but there are also menu items (\gui{Window $\rightarrow$ Close View}) and a keyboard shortcut (\gui{Ctrl+W}) available.
+
+
+\subsection{Split Windows}
+
+It is possible to simultaneously show two views in the same window, either side by side or one above the other.
+To split the window, use \gui{Window $\rightarrow$ Split Horizontally} and \gui{Window $\rightarrow$ Split Vertically}.
+This will create a new, initially empty tab bar, that can then be filled by moving views to it (see \subsecref{sec:scaffoldhunter:viewmanagement:moving}).
+The same menu items can also be used to change the orientation of an existing split.
+
+To get back to a window with no split, use \gui{Window $\rightarrow$ Single Tab Bar}.
+This will join all views from both sides of the split in a single tab bar.
+
+
+\subsection{Multiple Main Windows}
+
+Sometimes it can be convenient to open views in separate windows, for example to place them on different monitors, or to avoid a tab bar getting too crowded.
+\sh supports this by allowing multiple main windows within the same instance of the application.
+Windows can be opened using \gui{Window $\rightarrow$ Open New Window}, and closed using \gui{Window $\rightarrow$ Close Window}.
+Note that while each window can have its own views and layout, all windows still work on the same dataset and subset tree.
+Thus, opening multiple main windows is not the same as opening multiple instances of \sh.
+
+
+\subsection{Moving Views} \label{sec:scaffoldhunter:viewmanagement:moving}
+
+Within a single tab bar, views can easily be moved by simply dragging their tab to a new position.\\
+It's currently not possible to move views to a different tab bar (in case of split views) or to a different window via drag \& drop.
+To move windows from one window or tab bar to another, use \gui{Window $\rightarrow$ Move View to Window} and \gui{Window $\rightarrow$ Move View to Tab Bar}.
+
+
+\subsection{Renaming Views} \label{sec:scaffoldhunter:viewmanagement:renaming}
+
+Views are initially named after their type.
+For example, the tab of a newly created \stview will be called ``Scaffold Tree''.
+Views can be renamed to give them a more descriptive label.
+To do so, select \gui{Window $\rightarrow$ Rename View} in the main menu, or \gui{Rename} in the tab's context menu.

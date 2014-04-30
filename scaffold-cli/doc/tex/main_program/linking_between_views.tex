@@ -1,0 +1,47 @@
+\subsection{Selection}
+\label{sec:linking:selection}
+
+In order to create subsets containing molecules of interest it is possible to select several molecules in the views, which are then highlighted in red in all views.
+
+Single molecules or the molecules belonging to a scaffold can be selected or deselected by left clicking a molecule or a scaffold or in some views by dragging a selection box around them or by using the scaffold's context menu.
+Another possibility to change the selection is the subset menu. If the menu has been opened via the main menu, it offers options to add the current subset of the active view to the selection, to remove it, or to replace the selection. The same applies to the subset which has been used to open the context menu in the subset bar.
+
+The user can also select all molecules of the dataset, clear the selection, invert the current selection or confine the current selection to the molecules that are visible in the active view by using the selection menu in the main menu.
+
+The total number of molecules selected and the number of molecules selected that are visible in the active view are displayed at the bottom of the subset bar. Both have an associated \gui{Make Subset} button that can be used to create a new subset from the respective set.
+
+\paragraph{Selection colors}
+
+\tableref{tab:selectioncolors} shows the possible colors of molecules and scaffold, depending on their selection state:
+\\
+
+\begin{table}[ht] 
+  \centering
+ \begin{tabular}{rl}
+\textbf{Display color} &
+  \textbf{Selection state} \\ \toprule
+\textcolor{black}{black} &
+  Unselected molecule or scaffold \\
+\textcolor{red}{red} &
+  Selected molecule \\
+\textcolor{red}{red} &
+  Completely selected scaffold (all molecules belonging to the scaffold are selected) \\
+\textcolor{orange}{orange} &
+  Partially selected scaffold (some molecules belonging to the scaffold are selected) \\
+\textcolor{gray}{gray} &
+  Virtual scaffold (scaffold with no child molecules; cannot be selected) \\ \bottomrule
+\end{tabular}
+  \caption{Selection colors}
+  \label{tab:selectioncolors}
+\end{table}
+
+
+
+\subsection{Flags}
+\label{sec:linking:flags}
+
+Besides the selection, there is another kind of marking that is shared by all views: flags. Flags are intended as a fast way of marking molecules and scaffolds, for example as \textit{already seen} or \textit{investigate later}, and are available in a \textcolor{green}{public} and in a \textcolor{blue}{private} variant. Public flags are visible to everyone working on the dataset, while private flags are only visible to the user who created them.
+
+The user can mark molecules and scaffolds with flags by using the context menu or the main menu entry \gui{Selection}.
+If the context menu is used, the private and public flags of the molecule or scaffold under the cursor can be toggled.
+The selection menu allows the user to add or remove a public or private flag for all molecules of the current selection.
