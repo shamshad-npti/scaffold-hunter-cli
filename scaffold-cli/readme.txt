@@ -7,6 +7,13 @@ ZIP archive from the website and extract it somewhere on your computer
 Windows or /opt/scaffoldhunter on Unix/Linux/Mac, or alternatively in any
 local directory).
 
+CLI Installation from Source
+===========================
+  * Prerequisite: java and ant
+  * Run compile.bat to compile the source
+  * Once source has been compiled successfully, open command prompt 
+  	change directory to path/to/dist and run 'sh help' which will list
+  	all available command
 
 Starting Scaffold Hunter
 ========================

@@ -46,7 +46,7 @@
 	<property name="doc.dir" location="${doc.dir.name}" />
 	<property name="build.doc.dir" location="${build.dir}/${doc.dir.name}" />
 	<property name="manual.name" value="manual" />
-		
+	
 	<property name="main.class" value="edu.udo.scaffoldhunter.ScaffoldHunter"/>
 	<property name="sh.dir" value="edu/udo/scaffoldhunter"/>
 	<property name="sh.resources.dir" value="${sh.dir}/resources"/>
@@ -60,6 +60,8 @@
 	
 	<property name="dist.small-jar.filename" value="${project.name-version}.jar"/>
 	<property name="dist.small-jar" location="${dist.dir}/${dist.small-jar.filename}"/>
+ 	<property name="dist.cli-jar.filename" value="${project.name}.jar"/>
+	<property name="dist.cli-jar" location="${dist.dir}/${dist.cli-jar.filename}"/>
 	<property name="dist.zip" location="${dist.dir}/${project.name-version}.zip"/>
 	<property name="dist.src" location="${dist.dir}/${project.name}-src-${project.version}.tar.gz"/>
 	<property name="dist.fat-jar" location="${dist.dir}/${project.name}-fat-${project.version}.jar"/>
@@ -69,8 +71,6 @@
 			<include name="**/*.jar"/>
 		</fileset>
 	</path>
-	
-
 	
 	<!-- ================================= 
           target: init                      
@@ -321,6 +321,32 @@
     	</tar>
     </target>
 	
+	<!-- ==============================
+	      target: cli-jar
+	     ============================== --> 
+    <target name="cli-jar" depends="compile" description="Build target for scaffold hunter command line interface">
+        <delete dir="${dist.lib.dir}"/>
+        <mkdir dir="${dist.lib.dir}"/>
+    	<copy todir="${dist.lib.dir}">
+    		<fileset refid="build.libs"/>
+    	</copy>
+    	<copy todir="${dist.dir}">
+    		<fileset file="sh.bat" />
+    	</copy>
+    	<manifestclasspath jarfile="${dist.dir}/${dist.cli-jar.filename}" property="cli-jar.classpath">
+    		<classpath>
+    			<fileset dir="${dist.lib.dir}"/>
+    		</classpath>
+    	</manifestclasspath>
+        <jar destfile="${dist.dir}/${dist.cli-jar.filename}">
+            <manifest>
+                <attribute name="Main-Class" value="edu.udo.scaffoldhunter.cli.ScaffoldHunter"/>
+                <attribute name="Class-Path" value="${cli-jar.classpath}"/>
+            </manifest>
+            <fileset dir="bin"/>
+        </jar>
+    </target>
+
 	<!-- ================================= 
           target: release              
          ================================= -->
